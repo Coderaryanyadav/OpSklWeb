@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     const response = NextResponse.next();
 
     // Security Headers
@@ -24,6 +25,31 @@ export function middleware(request: NextRequest) {
         );
     }
 
+    // Route Protection: Check authentication for protected routes
+    const protectedRoutes = ['/dashboard', '/wallet', '/messages', '/post-gig', '/verify', '/profile'];
+    const authRoutes = ['/login', '/signup'];
+    const pathname = request.nextUrl.pathname;
+
+    // Check if current route is protected
+    const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+    const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
+
+    // Get auth token from cookie
+    const token = request.cookies.get('sb-access-token')?.value ||
+        request.cookies.get('sb-localhost-auth-token')?.value;
+
+    // If accessing protected route without auth, redirect to login
+    if (isProtectedRoute && !token) {
+        const loginUrl = new URL('/login', request.url);
+        loginUrl.searchParams.set('redirect', pathname);
+        return NextResponse.redirect(loginUrl);
+    }
+
+    // If accessing auth routes while logged in, redirect to dashboard
+    if (isAuthRoute && token) {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+
     return response;
 }
 
@@ -32,6 +58,6 @@ export const config = {
         /*
          * Match all request paths except static files and images
          */
-        '/((?!_next/static|_next/image|favicon.ico).*)',
+        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 };
