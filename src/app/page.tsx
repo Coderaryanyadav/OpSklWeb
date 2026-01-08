@@ -1,206 +1,230 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Navbar } from "@/components/layout/navbar";
 import { motion } from "framer-motion";
 import {
-  ArrowRight,
-  ShieldCheck,
-  Zap,
-  CheckCircle2,
-  Lock,
-  Search
+    ArrowRight,
+    ShieldCheck,
+    Zap,
+    Lock,
+    Search,
+    TrendingUp,
+    Gem,
+    CheckCircle2
 } from "lucide-react";
-import { GlowingBorder } from "@/components/ui/glowing-border";
 
-export default function Home() {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
+export default function LandingPage() {
+    const container = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    };
 
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
+    const item = {
+        hidden: { opacity: 0, y: 20 },
+        show: { opacity: 1, y: 0 }
+    };
 
-  return (
-    <div className="relative isolate">
-      {/* Background Blobs */}
-      <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
-        <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-primary to-accent opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style={{ clipPath: 'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)' }}></div>
-      </div>
+    return (
+        <div className="min-h-screen">
+            <Navbar />
 
-      {/* Hero Section */}
-      <section className="py-24 sm:py-32">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col items-center text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary mb-8"
-            >
-              <Zap className="h-4 w-4" />
-              <span>India&apos;s #1 Secure Gig Platform</span>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-5xl font-extrabold tracking-tight sm:text-7xl mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60"
-            >
-              Building the Future of <br className="hidden sm:block" />
-              <span className="text-primary italic">Trusted</span> Gig Work.
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="max-w-2xl text-lg text-muted-foreground mb-10 leading-relaxed"
-            >
-              OpSkl bridges the gap between premium clients and verified India-based talent.
-              Integrated Aadhaar verification and secure Escrow payments for total peace of mind.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
-            >
-              <Button size="lg" variant="premium" className="h-14 px-8 text-base gap-2 group">
-                Explore Gigs
-                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button size="lg" variant="outline" className="h-14 px-8 text-base border-white/10 hover:bg-white/5">
-                Join as Freelancer
-              </Button>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              variants={container}
-              initial="hidden"
-              animate="show"
-              className="mt-20 grid grid-cols-2 gap-8 md:grid-cols-4 w-full max-w-4xl"
-            >
-              {[
-                { label: "Verified Users", value: "2.5K+" },
-                { label: "Total Transactions", value: "₹25L+" },
-                { label: "Successful Gigs", value: "1.2K+" },
-                { label: "Trust Score", value: "99.8%" },
-              ].map((stat, idx) => (
-                <motion.div key={idx} variants={item} className="p-4">
-                  <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent mb-1">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground uppercase tracking-widest font-semibold">{stat.label}</div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Section */}
-      <section className="py-24 bg-white/[0.02] border-y border-white/5">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-16 text-center">
-            <h2 className="text-3xl font-bold mb-4">Why Businesses Trust OpSkl</h2>
-            <p className="text-muted-foreground">The most secure way to hire and get paid in the Indian market.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Aadhaar Verification",
-                icon: ShieldCheck,
-                desc: "Every service provider is KYC-verified using Aadhaar, ensuring you work with real, accountable professionals.",
-                color: "rgba(99, 102, 241, 0.4)"
-              },
-              {
-                title: "Smart Escrow",
-                icon: Lock,
-                desc: "Funds are held securely in escrow and only released when the work meets your satisfaction.",
-                color: "rgba(236, 72, 153, 0.4)"
-              },
-              {
-                title: "Skill Certification",
-                icon: CheckCircle2,
-                desc: "Our AI-driven skill tests ensure talent quality before they can apply for premium gigs.",
-                color: "rgba(16, 185, 129, 0.4)"
-              }
-            ].map((feature, idx) => (
-              <GlowingBorder key={idx} glowColor={feature.color}>
-                <div className="p-8 h-full">
-                  <div className="h-12 w-12 rounded-xl bg-primary/20 flex items-center justify-center mb-6 text-primary">
-                    <feature.icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{feature.desc}</p>
+            {/* Hero Section */}
+            <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-32 overflow-hidden">
+                {/* Animated Background Gradients */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] pointer-events-none -z-10">
+                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[60%] bg-primary/20 blur-[120px] rounded-full animate-pulse" />
+                    <div className="absolute bottom-[20%] right-[-10%] w-[35%] h-[50%] bg-accent/20 blur-[120px] rounded-full animate-pulse delay-700" />
                 </div>
-              </GlowingBorder>
-            ))}
-          </div>
+
+                <div className="container mx-auto px-4 md:px-6">
+                    <div className="text-center max-w-5xl mx-auto">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.5 }}
+                            className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-bold text-primary mb-8"
+                        >
+                            <Zap className="h-4 w-4" />
+                            <span>India&apos;s #1 Trust-First Gig Platform</span>
+                        </motion.div>
+
+                        <motion.h1
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.1 }}
+                            className="text-6xl md:text-8xl font-black font-heading tracking-tighter mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 leading-[1.1]"
+                        >
+                            The Modern Way to <br />
+                            <span className="text-primary italic">Hire & Work</span> Securely.
+                        </motion.h1>
+
+                        <motion.p
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="max-w-2xl mx-auto text-xl text-muted-foreground mb-12 leading-relaxed"
+                        >
+                            Bridging the gap between premium businesses and Aadhaar-verified Indian talent.
+                            Integrated Escrow, skill certification, and transparent reputation.
+                        </motion.p>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.3 }}
+                            className="flex flex-col sm:flex-row gap-6 justify-center"
+                        >
+                            <Link
+                                href="/gigs"
+                                className="h-16 px-10 rounded-2xl bg-primary text-white text-lg font-black uppercase tracking-widest flex items-center gap-3 shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all group"
+                            >
+                                Hire Expert Talent
+                                <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                            </Link>
+                            <Link
+                                href="/talent"
+                                className="h-16 px-10 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md text-lg font-black uppercase tracking-widest flex items-center gap-3 hover:bg-white/10 transition-all"
+                            >
+                                Find Remote Work
+                            </Link>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Trust Metric Banner */}
+            <section className="py-12 border-y border-white/5 bg-white/[0.01]">
+                <div className="container mx-auto px-4 md:px-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+                        {[
+                            { label: "Verified Professionals", value: "25,000+", icon: ShieldCheck },
+                            { label: "Total Volume", value: "₹45Cr+", icon: TrendingUp },
+                            { label: "Completed Gigs", value: "15K+", icon: CheckCircle2 },
+                            { label: "Trust Score", value: "99.9%", icon: Gem },
+                        ].map((stat, idx) => (
+                            <div key={idx} className="flex flex-col items-center text-center lg:items-start lg:text-left gap-1">
+                                <div className="flex items-center gap-2 text-primary mb-1 uppercase text-[10px] font-black tracking-widest">
+                                    <stat.icon className="h-3 w-3" />
+                                    {stat.label}
+                                </div>
+                                <div className="text-3xl font-black font-heading">{stat.value}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Features Grid */}
+            <section className="py-24 bg-background">
+                <div className="container mx-auto px-4 md:px-6">
+                    <div className="mb-20 text-center max-w-3xl mx-auto">
+                        <h2 className="text-4xl md:text-5xl font-black font-heading tracking-tight mb-6">Designed for Trust</h2>
+                        <p className="text-muted-foreground text-lg">Every feature is built to protect both clients and providers in the gig economy.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        {[
+                            {
+                                title: "Aadhaar Linked",
+                                desc: "Every profile is KYC-verified using Aadhaar. No impersonation, just real, accountable professionals.",
+                                icon: ShieldCheck,
+                                color: "from-blue-600/20 to-blue-600/5",
+                            },
+                            {
+                                title: "UPI Escrow",
+                                desc: "Payments are held securely in a vault. Millions in volume released only upon approved milestones.",
+                                icon: Lock,
+                                color: "from-purple-600/20 to-purple-600/5",
+                            },
+                            {
+                                title: "Skill Score",
+                                desc: "Our AI analysis verifies portfolio claims and skill levels before a single bid is placed.",
+                                icon: Gem,
+                                color: "from-emerald-600/20 to-emerald-600/5",
+                            }
+                        ].map((feat, idx) => (
+                            <motion.div
+                                key={idx}
+                                whileHover={{ y: -10 }}
+                                className="p-10 rounded-[2.5rem] border border-white/5 bg-white/[0.02] relative group overflow-hidden"
+                            >
+                                <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-700", feat.color)} />
+                                <div className="relative z-10">
+                                    <div className="h-16 w-16 rounded-2xl bg-white/5 flex items-center justify-center mb-8 border border-white/10 text-primary">
+                                        <feat.icon className="h-8 w-8" />
+                                    </div>
+                                    <h3 className="text-2xl font-black mb-4 tracking-tight">{feat.title}</h3>
+                                    <p className="text-muted-foreground leading-relaxed italic">&quot;{feat.desc}&quot;</p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Categories Section */}
+            <section className="py-24 bg-white/[0.01]">
+                <div className="container mx-auto px-4 md:px-6">
+                    <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-8 text-center md:text-left">
+                        <div>
+                            <h2 className="text-4xl md:text-5xl font-black font-heading tracking-tight mb-6">Top Specializations</h2>
+                            <p className="text-muted-foreground text-lg">Hire from a curated pool of the top 1% talent in India.</p>
+                        </div>
+                        <Link href="/browse" className="text-primary font-bold uppercase tracking-widest flex items-center gap-2 hover:gap-4 transition-all">
+                            View all categories <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                        {[
+                            "Digital Marketing", "Full-Stack Dev", "UI/UX Design", "Copywriting",
+                            "Blockchain", "Graphic Design", "Data Science", "Video Editing"
+                        ].map((cat, idx) => (
+                            <motion.div
+                                key={idx}
+                                whileHover={{ scale: 1.05 }}
+                                className="group p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-primary/30 cursor-pointer flex items-center justify-between"
+                            >
+                                <span className="text-lg font-bold tracking-tight">{cat}</span>
+                                <Search className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all" />
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* CTA Section */}
+            <section className="py-32">
+                <div className="container mx-auto px-4">
+                    <div className="rounded-[3rem] bg-gradient-to-br from-primary/30 via-primary/10 to-transparent border border-white/10 p-12 md:p-24 text-center relative overflow-hidden">
+                        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-primary/20 blur-[150px] rounded-full" />
+                        <h2 className="text-5xl md:text-7xl font-black font-heading tracking-tighter mb-8 leading-tight">Ready to scale <br /> your big idea?</h2>
+                        <p className="text-xl text-muted-foreground mb-12 max-w-xl mx-auto italic">
+                            Join the ecosystem where trust is the default and quality is mandatory.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                            <Link href="/post-gig" className="h-16 px-12 rounded-2xl bg-white text-background text-lg font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all">
+                                Post Project
+                            </Link>
+                            <Link href="/login" className="h-16 px-12 rounded-2xl border border-white/20 bg-white/5 text-lg font-black uppercase tracking-widest hover:bg-white/10 transition-all">
+                                Create Profile
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Simple Footer */}
+            <footer className="py-12 border-t border-white/5 text-center">
+                <div className="text-muted-foreground text-xs font-bold uppercase tracking-[0.3em]">
+                    &copy; 2026 OpSkl &bull; Building the Future of Work in India.
+                </div>
+            </footer>
         </div>
-      </section>
-
-      {/* Categories Section */}
-      <section className="py-24">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
-            <div>
-              <h2 className="text-3xl font-bold mb-4">Top Categories</h2>
-              <p className="text-muted-foreground">Find the best talent across leading industries.</p>
-            </div>
-            <Link href="/browse" className="text-primary font-medium inline-flex items-center gap-2 hover:underline">
-              View all categories
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              "Digital Marketing", "Web Development", "UI/UX Design", "Content Writing",
-              "App Development", "Graphic Design", "Data Analysis", "Video Editing"
-            ].map((cat, idx) => (
-              <motion.div
-                key={idx}
-                whileHover={{ scale: 1.02 }}
-                className="group cursor-pointer p-6 rounded-xl border border-white/10 bg-white/[0.01] hover:bg-white/[0.03] flex items-center justify-between"
-              >
-                <span className="font-medium">{cat}</span>
-                <Search className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Search Prompt */}
-      <section className="py-24 mb-12">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="rounded-3xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-white/10 p-8 md:p-16 text-center relative overflow-hidden">
-            <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-primary/20 blur-[120px]" />
-            <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-64 h-64 bg-accent/20 blur-[120px]" />
-
-            <h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to scale your business?</h2>
-            <p className="text-muted-foreground text-lg mb-10 max-w-xl mx-auto">
-              Join thousands of businesses getting work done securely and efficiently on OpSkl.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="h-14 px-10">Hire Talent</Button>
-              <Button size="lg" variant="outline" className="h-14 px-10 border-white/10">How it works</Button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
+    );
 }

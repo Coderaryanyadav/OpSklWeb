@@ -1,48 +1,38 @@
-export interface Client {
+export type Profile = {
+    id: string;
     name: string;
-    verified: boolean;
+    title: string;
+    bio?: string;
     avatar?: string;
-    completedGigs?: number;
-    rating?: number;
-}
+    skills: string[];
+    xp: number;
+    rating: number;
+    verified: boolean;
+    location?: string;
+    role: 'provider' | 'client';
+};
 
-export interface Budget {
-    min: number;
-    max: number;
-}
-
-export interface Gig {
-    id: string | number;
+export type Gig = {
+    id: number;
     title: string;
     description: string;
-    budget: Budget;
-    skills: string[];
-    client: Client;
-    location: string;
-    postedDate: string;
     category?: string;
-    created_at?: string;
-}
-
-export interface PortfolioItem {
-    title: string;
-    img: string;
-}
-
-export interface Profile {
-    id: string | number;
-    name: string;
-    title: string;
-    bio: string;
-    rating: number;
-    reviews: number;
-    xp: number;
-    location: string;
-    verified: boolean;
-    aadhaarVerified: boolean;
+    budget_min: number;
+    budget_max: number;
     skills: string[];
-    rate: number;
-    completedGigs: number;
-    portfolio: PortfolioItem[];
-    avatar?: string;
-}
+    location?: string;
+    client_id: string;
+    status: 'open' | 'in_progress' | 'completed' | 'cancelled';
+    created_at: string;
+    client?: {
+        name: string;
+        avatar?: string;
+        verified: boolean;
+    };
+};
+
+export type NavbarItem = {
+    label: string;
+    href: string;
+    icon?: React.ComponentType<{ className?: string }>;
+};
