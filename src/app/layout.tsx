@@ -19,6 +19,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://opskl.com"),
   title: {
     default: "OpSkl | India's Premium Gig Economy Platform",
     template: "%s | OpSkl"
