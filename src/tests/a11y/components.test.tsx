@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
-import { axe, toHaveNoViolations } from 'vitest-axe';
+import { axe } from 'vitest-axe';
+import { describe, it, expect, vi } from 'vitest';
 import { Navbar } from '@/components/layout/navbar';
 
 // Mock Router for Navbar
