@@ -150,9 +150,47 @@ export default function HomePage() {
             </section>
 
             {/* Footer */}
-            <footer className="border-t border-white/5 py-12">
-                <div className="container mx-auto px-4 md:px-6 text-center text-sm text-muted-foreground">
-                    <p>&copy; 2026 OpSkl. Trust-First Gig Economy for India.</p>
+            <footer className="border-t border-white/10 bg-black/40 backdrop-blur-xl pt-24 pb-12">
+                <div className="container mx-auto px-4 md:px-6">
+                    <div className="grid md:grid-cols-4 gap-12 mb-16">
+                        <div className="col-span-2 space-y-4">
+                            <div className="flex items-center gap-2 text-wrap">
+                                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white">
+                                    <ShieldCheck className="h-5 w-5" />
+                                </div>
+                                <span className="text-xl font-black font-heading tracking-tight">OpSkl</span>
+                            </div>
+                            <p className="text-zinc-500 max-w-sm leading-relaxed">
+                                India&apos;s first trust-based gig economy platform.
+                                Providing secure infrastructure for the future of work with verification at its core.
+                            </p>
+                        </div>
+
+                        <div className="space-y-4">
+                            <h4 className="font-black text-sm uppercase tracking-widest">Platform</h4>
+                            <ul className="space-y-2 text-zinc-400">
+                                <li><Link href="/gigs" className="hover:text-primary transition-colors">Find Work</Link></li>
+                                <li><Link href="/talent" className="hover:text-primary transition-colors">Hire Talent</Link></li>
+                                <li><Link href="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link></li>
+                            </ul>
+                        </div>
+
+                        <div className="space-y-4">
+                            <h4 className="font-black text-sm uppercase tracking-widest">Legal</h4>
+                            <ul className="space-y-2 text-zinc-400">
+                                <li><Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+                                <li><Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link></li>
+                                <li><Link href="#" className="hover:text-primary transition-colors">Escrow Rules</Link></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-zinc-600 font-bold uppercase tracking-wider">
+                        <p>&copy; 2026 OpSkl Infrastructure.</p>
+                        <div className="flex gap-6">
+                            <span>Made with ❤️ in India</span>
+                        </div>
+                    </div>
                 </div>
             </footer>
         </div>
