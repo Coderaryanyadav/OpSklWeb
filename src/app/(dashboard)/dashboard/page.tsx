@@ -71,10 +71,13 @@ export default function DashboardPage() {
         enabled: !!user
     });
 
-    if (isLoading) {
+    if (isLoading || !profile) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="h-10 w-10 text-primary animate-spin" />
+                <div className="text-center">
+                    <Loader2 className="h-12 w-12 text-primary animate-spin mx-auto mb-4" />
+                    <p className="text-sm text-muted-foreground">Loading dashboard...</p>
+                </div>
             </div>
         );
     }
@@ -86,13 +89,13 @@ export default function DashboardPage() {
             <div className="container mx-auto px-4 md:px-6">
                 {isClient ? (
                     <ClientDashboard
-                        profile={profile!}
+                        profile={profile}
                         stats={dashboardData?.stats as ClientStats | undefined}
                         gigs={dashboardData?.gigs}
                     />
                 ) : (
                     <ProviderDashboard
-                        profile={profile!}
+                        profile={profile}
                         stats={dashboardData?.stats as ProviderStats | undefined}
                     />
                 )}
