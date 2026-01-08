@@ -2,9 +2,10 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { DollarSign, MapPin, ShieldCheck } from "lucide-react";
+import { DollarSign, MapPin, ShieldCheck, Briefcase } from "lucide-react";
 import type { Gig } from "@/types";
 import Link from "next/link";
+import Image from "next/image";
 
 interface GigCardProps {
     gig: Gig;
@@ -25,7 +26,14 @@ export function GigCard({ gig }: GigCardProps) {
                         <div className="flex items-center gap-3">
                             <div className="h-12 w-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
                                 {gig.client?.avatar ? (
-                                    <img src={gig.client.avatar} alt={gig.client.name} className="h-full w-full object-cover" />
+                                    <Image
+                                        src={gig.client.avatar}
+                                        alt={gig.client.name}
+                                        width={48}
+                                        height={48}
+                                        className="h-full w-full object-cover"
+                                        unoptimized
+                                    />
                                 ) : (
                                     <Briefcase className="h-6 w-6 text-zinc-500" />
                                 )}

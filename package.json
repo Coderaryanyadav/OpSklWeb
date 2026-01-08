@@ -15,12 +15,14 @@
     "load-test:full": "node scripts/load-test.js full",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "analyze": "cross-env ANALYZE=true next build"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "@fontsource/outfit": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
+    "@next/bundle-analyzer": "^16.1.1",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-label": "^2.1.8",
@@ -32,6 +34,7 @@
     "@tanstack/react-query-devtools": "^5.91.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cross-env": "^10.1.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.24.10",
     "immer": "^11.1.3",

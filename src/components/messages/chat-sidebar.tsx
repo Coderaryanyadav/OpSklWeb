@@ -4,6 +4,7 @@ import React from "react";
 import { Search, Circle, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ChatPartner } from "@/hooks/use-messages";
+import Image from "next/image";
 
 interface ChatSidebarProps {
     partners: ChatPartner[] | undefined;
@@ -47,7 +48,18 @@ export function ChatSidebar({ partners, isLoading, selectedPartnerId, onSelectPa
                     >
                         <div className="relative">
                             <div className="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
-                                {partner.avatar ? <img src={partner.avatar} className="h-full w-full object-cover" alt={partner.name} /> : <User className="h-6 w-6 text-zinc-500" />}
+                                {partner.avatar ? (
+                                    <Image
+                                        src={partner.avatar}
+                                        className="h-full w-full object-cover"
+                                        alt={partner.name}
+                                        width={48}
+                                        height={48}
+                                        unoptimized
+                                    />
+                                ) : (
+                                    <User className="h-6 w-6 text-zinc-500" />
+                                )}
                             </div>
                             <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 border-2 border-zinc-950" />
                         </div>

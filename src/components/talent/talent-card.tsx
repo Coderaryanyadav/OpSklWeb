@@ -2,9 +2,10 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Star, ShieldCheck, MapPin, Briefcase } from "lucide-react";
+import { Star, ShieldCheck, MapPin } from "lucide-react";
 import type { Profile } from "@/types";
 import Link from "next/link";
+import Image from "next/image";
 
 interface TalentCardProps {
     profile: Profile;
@@ -25,7 +26,14 @@ export function TalentCard({ profile }: TalentCardProps) {
                         <div className="flex items-center gap-4">
                             <div className="h-16 w-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
                                 {profile.avatar ? (
-                                    <img src={profile.avatar} alt={profile.name} className="h-full w-full object-cover" />
+                                    <Image
+                                        src={profile.avatar}
+                                        alt={profile.name}
+                                        width={64}
+                                        height={64}
+                                        className="h-full w-full object-cover"
+                                        unoptimized
+                                    />
                                 ) : (
                                     <span className="text-2xl font-black">{profile.name.charAt(0)}</span>
                                 )}

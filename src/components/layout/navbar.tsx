@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import { ShieldCheck, Briefcase, Users, MessageSquare, Wallet, LogOut, Menu, X } from "lucide-react";
 import { useAuthStore } from "@/stores/auth-store";
 import { useState } from "react";
@@ -70,7 +71,7 @@ export function Navbar() {
                                     className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden hover:border-primary transition-colors"
                                 >
                                     {profile?.avatar ? (
-                                        <img src={profile.avatar} alt={profile.name} className="h-full w-full object-cover" />
+                                        <Image src={profile.avatar} alt={profile.name} width={40} height={40} className="h-full w-full object-cover" unoptimized />
                                     ) : (
                                         <span className="text-sm font-black">{profile?.name.charAt(0) || "U"}</span>
                                     )}

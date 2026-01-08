@@ -4,9 +4,10 @@ import React from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/client";
-import { Loader2, ShieldCheck, Star, MapPin, Briefcase, Mail, Calendar } from "lucide-react";
+import { Loader2, ShieldCheck, Star, MapPin, Calendar } from "lucide-react";
 import { useParams } from "next/navigation";
 import type { Profile } from "@/types";
+import Image from "next/image";
 
 export default function ProfilePage() {
     const params = useParams();
@@ -53,85 +54,82 @@ export default function ProfilePage() {
                         <div className="p-10 rounded-[3rem] border border-white/10 bg-white/[0.02] sticky top-24">
                             <div className="h-32 w-32 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden mx-auto mb-6">
                                 {profile.avatar ? (
-                                    <img src={profile.avatar} alt={profile.name} className="h-full w-full object-cover" />
+                                    <Image
+                                        src={profile.avatar}
+                                        alt={profile.name}
+                                        width={128}
+                                        height={128}
+                                        className="h-full w-full object-cover"
+                                        unoptimized
+                                    />
                                 ) : (
                                     <span className="text-5xl font-black">{profile.name.charAt(0)}</span>
                                 )}
                             </div>
 
-                            <div className="text-center mb-8">
-                                <h1 className="text-2xl font-black mb-2 flex items-center justify-center gap-2">
+                            <div className="text-center mb-6">
+                                <h1 className="text-2xl font-black mb-1 flex items-center justify-center gap-2">
                                     {profile.name}
                                     {profile.verified && <ShieldCheck className="h-5 w-5 text-emerald-500" />}
                                 </h1>
-                                <p className="text-muted-foreground font-medium">{profile.title}</p>
+                                <p className="text-zinc-500 font-medium">{profile.title}</p>
                             </div>
 
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5">
-                                    <div className="flex items-center gap-2 text-yellow-500">
-                                        <Star className="h-4 w-4 fill-current" />
-                                        <span className="font-black">{profile.rating.toFixed(1)}</span>
-                                    </div>
-                                    <span className="text-xs text-zinc-500 font-bold">{profile.xp} XP</span>
+                            <div className="space-y-4 pt-6 border-t border-white/5">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-zinc-500 text-sm">Rating</span>
+                                    <span className="font-bold flex items-center gap-1">
+                                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                                        {profile.rating.toFixed(1)}
+                                    </span>
                                 </div>
-
-                                {profile.location && (
-                                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/5">
-                                        <MapPin className="h-4 w-4 text-zinc-500" />
-                                        <span className="text-sm font-medium">{profile.location}</span>
-                                    </div>
-                                )}
-
-                                <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/5">
-                                    <Calendar className="h-4 w-4 text-zinc-500" />
-                                    <span className="text-sm font-medium">Joined {new Date(profile.created_at).getFullYear()}</span>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-zinc-500 text-sm">Experience</span>
+                                    <span className="font-bold text-sm">{profile.xp} XP</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-zinc-500 text-sm">Location</span>
+                                    <span className="font-bold text-sm flex items-center gap-1">
+                                        <MapPin className="h-3 w-3" />
+                                        {profile.location || "Remote"}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-zinc-500 text-sm">Member Since</span>
+                                    <span className="font-bold text-sm flex items-center gap-1">
+                                        <Calendar className="h-3 w-3" />
+                                        {new Date(profile.created_at).getFullYear()}
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div className="lg:col-span-2 space-y-8">
-                        <div className="p-10 rounded-[3rem] border border-white/10 bg-white/[0.02]">
-                            <h2 className="text-2xl font-black mb-6">About</h2>
-                            <p className="text-muted-foreground leading-relaxed">
-                                {profile.bio || "No bio available yet."}
-                            </p>
+                        <div>
+                            <h2 className="text-xl font-black mb-6">About</h2>
+                            <div className="p-8 rounded-[2.5rem] border border-white/5 bg-white/[0.02]">
+                                <p className="text-zinc-400 leading-relaxed">
+                                    {profile.bio || "No bio available."}
+                                </p>
+                            </div>
                         </div>
 
-                        {profile.skills && profile.skills.length > 0 && (
-                            <div className="p-10 rounded-[3rem] border border-white/10 bg-white/[0.02]">
-                                <h2 className="text-2xl font-black mb-6">Skills & Expertise</h2>
-                                <div className="flex flex-wrap gap-3">
-                                    {profile.skills.map((skill, idx) => (
+                        <div>
+                            <h2 className="text-xl font-black mb-6">Skills & Expertise</h2>
+                            <div className="flex flex-wrap gap-2">
+                                {profile.skills && profile.skills.length > 0 ? (
+                                    profile.skills.map((skill, idx) => (
                                         <span
                                             key={idx}
-                                            className="px-6 py-3 rounded-2xl bg-primary/10 border border-primary/20 text-primary text-sm font-black uppercase tracking-wider"
+                                            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 font-bold text-sm"
                                         >
                                             {skill}
                                         </span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="p-10 rounded-[3rem] border border-white/10 bg-white/[0.02]">
-                            <h2 className="text-2xl font-black mb-6">Stats</h2>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                                <div className="text-center p-6 rounded-2xl bg-white/5">
-                                    <div className="text-3xl font-black font-heading text-primary mb-2">{profile.xp}</div>
-                                    <div className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Total XP</div>
-                                </div>
-                                <div className="text-center p-6 rounded-2xl bg-white/5">
-                                    <div className="text-3xl font-black font-heading text-yellow-500 mb-2">{profile.rating.toFixed(1)}</div>
-                                    <div className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Rating</div>
-                                </div>
-                                <div className="text-center p-6 rounded-2xl bg-white/5">
-                                    <div className="text-3xl font-black font-heading text-emerald-500 mb-2">
-                                        {profile.verified ? "✓" : "✗"}
-                                    </div>
-                                    <div className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Verified</div>
-                                </div>
+                                    ))
+                                ) : (
+                                    <span className="text-zinc-500 italic">No skills listed</span>
+                                )}
                             </div>
                         </div>
                     </div>

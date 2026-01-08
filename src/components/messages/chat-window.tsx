@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { motion } from "framer-motion";
 import type { Message, Profile } from "@/types";
 import type { ChatPartner } from "@/hooks/use-messages";
+import Image from "next/image";
 
 interface ChatWindowProps {
     user: Profile | null;
@@ -57,7 +58,18 @@ export function ChatWindow({
                 <div className="flex items-center gap-4">
                     <button onClick={onBack} className="md:hidden p-2 text-zinc-500 hover:text-white">Back</button>
                     <div className="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
-                        {selectedPartner.avatar ? <img src={selectedPartner.avatar} className="h-full w-full object-cover" alt={selectedPartner.name} /> : <User className="h-6 w-6 text-zinc-500" />}
+                        {selectedPartner.avatar ? (
+                            <Image
+                                src={selectedPartner.avatar}
+                                className="h-full w-full object-cover"
+                                alt={selectedPartner.name}
+                                width={48}
+                                height={48}
+                                unoptimized
+                            />
+                        ) : (
+                            <User className="h-6 w-6 text-zinc-500" />
+                        )}
                     </div>
                     <div>
                         <div className="font-black uppercase tracking-tight">{selectedPartner.name}</div>
