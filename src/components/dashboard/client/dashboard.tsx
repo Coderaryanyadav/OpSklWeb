@@ -100,8 +100,22 @@ export function ClientDashboard({ profile, stats, gigs }: ClientDashboardProps) 
                             </div>
                         </div>
                     )) : (
-                        <div className="p-12 text-center border-2 border-dashed border-white/5 rounded-[2rem]">
-                            <p className="text-zinc-500 font-bold italic">No projects broadcasted yet.</p>
+                        <div className="p-16 text-center border-2 border-dashed border-white/10 rounded-[2rem] bg-white/[0.01] flex flex-col items-center justify-center gap-6 group hover:border-white/20 transition-colors">
+                            <div className="h-20 w-20 rounded-3xl bg-white/[0.03] flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                                <Plus className="h-10 w-10 text-zinc-600 group-hover:text-primary transition-colors" />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-xl font-black font-heading tracking-tight">Ecosystem Dormant</h3>
+                                <p className="text-zinc-500 font-medium max-w-sm mx-auto">
+                                    Initiate your first project to begin attracting verified talent.
+                                </p>
+                            </div>
+                            <Link
+                                href="/post-gig"
+                                className="px-8 py-3 rounded-xl bg-white text-black font-black uppercase tracking-widest text-xs hover:scale-105 transition-transform"
+                            >
+                                Initialize Project
+                            </Link>
                         </div>
                     )}
                 </div>

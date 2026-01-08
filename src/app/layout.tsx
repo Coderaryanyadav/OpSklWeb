@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Toaster } from "sonner";
+import { MouseSpotlight } from "@/components/ui/mouse-spotlight";
 
 const inter = Inter({
     subsets: ["latin"],
@@ -69,6 +70,7 @@ export default function RootLayout({
         <html lang="en" className="dark">
             <body className={`${inter.variable} ${outfit.variable} font-sans antialiased`}>
                 <Providers>
+                    <MouseSpotlight />
                     {children}
                     <Toaster position="top-center" richColors />
                 </Providers>
