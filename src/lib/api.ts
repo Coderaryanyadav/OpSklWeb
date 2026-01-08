@@ -77,13 +77,25 @@ export const ApiService = {
 
     async createGig(gig: Partial<Gig>): Promise<{ success: boolean; data?: Gig[]; error?: unknown }> {
         try {
+            // Map to database column names (snake_case)
+            const dbGig = {
+                title: gig.title,
+                description: gig.description,
+                category: gig.category,
+                budget: gig.budget,
+                skills: gig.skills,
+                location: gig.location,
+                client: gig.client,
+                posted_date: gig.postedDate || new Date().toISOString()
+            };
+
             const { data, error } = await supabase
                 .from("gigs")
-                .insert([gig])
+                .insert([dbGig])
                 .select();
 
             if (error) throw error;
-            return { success: true, data };
+            return { success: true, data: data as Gig[] };
         } catch (err) {
             console.error("[ApiService] Error creating gig:", err);
             return { success: false, error: err };
