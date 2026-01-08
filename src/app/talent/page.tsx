@@ -10,31 +10,52 @@ import { Search, SlidersHorizontal, Loader2, Users, AlertCircle, Filter } from "
 import { cn } from "@/lib/utils";
 import type { Profile } from "@/types";
 
+import { useDebounce } from "@/hooks/use-debounce";
+
 export default function BrowseTalentPage() {
     const [search, setSearch] = useState("");
     const [skill, setSkill] = useState("All");
+    const [page, setPage] = useState(1);
+    const pageSize = 12;
 
-    const { data: talent, isLoading, error } = useQuery({
-        queryKey: ['talent', skill, search],
+    const debouncedSearch = useDebounce(search, 500);
+
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['talent', skill, debouncedSearch, page],
         queryFn: async () => {
+            const start = (page - 1) * pageSize;
+            const end = start + pageSize - 1;
+
             let query = supabase
                 .from('profiles')
-                .select('*')
+                .select('*', { count: 'exact' })
                 .eq('role', 'provider');
 
             if (skill !== "All") {
                 query = query.contains('skills', [skill]);
             }
 
-            if (search) {
-                query = query.ilike('name', `%${search}%`);
+            if (debouncedSearch) {
+                // Improved search: check name and title
+                query = query.or(`name.ilike.%${debouncedSearch}%,title.ilike.%${debouncedSearch}%`);
             }
 
-            const { data, error } = await query.order('rating', { ascending: false });
+            const { data, error, count } = await query
+                .order('rating', { ascending: false })
+                .range(start, end);
+
             if (error) throw error;
-            return data as Profile[];
+
+            return {
+                profiles: data as Profile[],
+                totalCount: count || 0
+            };
         }
     });
+
+    const talent = data?.profiles;
+    const totalCount = data?.totalCount || 0;
+    const totalPages = Math.ceil(totalCount / pageSize);
 
     const popularSkills = ["All", "React", "Design", "Node.js", "Solidity", "Python"];
 
@@ -114,12 +135,47 @@ export default function BrowseTalentPage() {
                         <p className="text-muted-foreground max-w-sm italic">Try searching for a different skill or broadening your filter criteria.</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <AnimatePresence mode="popLayout">
-                            {talent?.map((profile) => (
-                                <TalentCard key={profile.id} profile={profile} />
-                            ))}
-                        </AnimatePresence>
+                    <div className="space-y-12">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <AnimatePresence mode="popLayout">
+                                {talent?.map((profile) => (
+                                    <TalentCard key={profile.id} profile={profile} />
+                                ))}
+                            </AnimatePresence>
+                        </div>
+
+                        {totalPages > 1 && (
+                            <div className="flex justify-center items-center gap-4 mt-16 pt-12 border-t border-white/5">
+                                <button
+                                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                                    disabled={page === 1}
+                                    className="h-12 px-6 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all font-black uppercase tracking-widest text-[10px]"
+                                >
+                                    Previous
+                                </button>
+                                <div className="flex gap-2">
+                                    {[...Array(totalPages)].map((_, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => setPage(i + 1)}
+                                            className={cn(
+                                                "h-12 w-12 rounded-xl flex items-center justify-center font-black transition-all",
+                                                page === i + 1 ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-white/5 text-muted-foreground hover:bg-white/10"
+                                            )}
+                                        >
+                                            {i + 1}
+                                        </button>
+                                    ))}
+                                </div>
+                                <button
+                                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={page === totalPages}
+                                    className="h-12 px-6 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all font-black uppercase tracking-widest text-[10px]"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

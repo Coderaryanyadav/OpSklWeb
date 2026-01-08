@@ -8,10 +8,12 @@ import { useRouter } from "next/navigation";
 import { Loader2, Briefcase } from "lucide-react";
 import { toast } from "sonner";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 export default function PostGigPage() {
     const { profile } = useAuthStore();
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
+    const queryClient = useQueryClient();
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -22,72 +24,95 @@ export default function PostGigPage() {
         location: "Remote",
     });
 
-    // CRITICAL: Only CLIENTS can post gigs (they need work done)
+    // CRITICAL: Only CLIENTS can post gigs
     useEffect(() => {
         if (profile && profile.role !== 'client') {
-            toast.error("Only clients can post gigs. Providers browse and apply for gigs.");
+            toast.error("Access denied. Providers browse and apply for gigs.");
             router.push('/gigs');
         }
     }, [profile, router]);
 
+    const postGigMutation = useMutation({
+        mutationFn: async () => {
+            if (!profile) throw new Error("Authentication required");
+
+            const { error } = await supabase.from('gigs').insert({
+                title: formData.title.trim(),
+                description: formData.description.trim(),
+                category: formData.category,
+                budget_min: parseInt(formData.budgetMin),
+                budget_max: parseInt(formData.budgetMax),
+                skills: formData.skills.split(',').map(s => s.trim()).filter(Boolean),
+                location: formData.location.trim(),
+                client_id: profile.id,
+                status: 'open'
+            });
+
+            if (error) throw error;
+        },
+        onSuccess: () => {
+            toast.success("Project broadcasted successfully!");
+            queryClient.invalidateQueries({ queryKey: ['gigs'] });
+            queryClient.invalidateQueries({ queryKey: ['dashboard_stats'] });
+            router.push("/dashboard");
+        },
+        onError: (error) => {
+            const message = error instanceof Error ? error.message : "Failed to broadcast project";
+            toast.error(message);
+        }
+    });
+
     if (!profile || profile.role !== 'client') {
-        return null; // Redirecting...
+        return null;
     }
 
     const validate = () => {
-        if (!formData.title.trim()) {
-            toast.error("Project title is required");
+        if (!formData.title.trim() || formData.title.length < 10) {
+            toast.error("Project title must be at least 10 characters");
+            return false;
+        }
+        if (formData.title.length > 100) {
+            toast.error("Project title is too long (max 100 characters)");
             return false;
         }
         if (!formData.description.trim() || formData.description.length < 50) {
-            toast.error("Description must be at least 50 characters");
+            toast.error("Description must be at least 50 characters to attract elite talent");
             return false;
         }
-        if (!formData.budgetMin || !formData.budgetMax) {
-            toast.error("Budget range is required");
+        if (formData.description.length > 5000) {
+            toast.error("Description is too long (max 5000 characters)");
             return false;
         }
-        if (parseInt(formData.budgetMin) >= parseInt(formData.budgetMax)) {
-            toast.error("Maximum budget must be greater than minimum");
+        const min = parseInt(formData.budgetMin);
+        const max = parseInt(formData.budgetMax);
+
+        if (isNaN(min) || isNaN(max)) {
+            toast.error("Budget must be a valid number");
+            return false;
+        }
+        if (min < 500) {
+            toast.error("Minimum budget is ₹500");
+            return false;
+        }
+        if (max > 10000000) {
+            toast.error("Budget exceeds platform limits (₹1 Cr)");
+            return false;
+        }
+        if (min >= max) {
+            toast.error("Maximum budget must be strictly greater than minimum");
             return false;
         }
         return true;
     };
 
     const handleSubmit = async () => {
-        if (!profile) {
-            toast.error("You must be logged in to broadcast projects");
-            router.push("/login");
-            return;
-        }
-
-        if (!validate()) return;
-        setLoading(true);
-
-        try {
-            const { error } = await supabase.from('gigs').insert({
-                title: formData.title,
-                description: formData.description,
-                category: formData.category,
-                budget_min: parseInt(formData.budgetMin),
-                budget_max: parseInt(formData.budgetMax),
-                skills: formData.skills.split(',').map(s => s.trim()).filter(Boolean),
-                location: formData.location,
-                client_id: profile.id,
-                status: 'open'
-            });
-
-            if (error) throw error;
-
-            toast.success("Project broadcasted to marketplace!");
-            router.push("/dashboard");
-        } catch (error) {
-            const message = error instanceof Error ? error.message : "Failed to post gig";
-            toast.error(message);
-        } finally {
-            setLoading(false);
+        if (validate()) {
+            postGigMutation.mutate();
         }
     };
+
+    const loading = postGigMutation.isPending;
+
 
     return (
         <div className="min-h-screen pt-24 pb-24">

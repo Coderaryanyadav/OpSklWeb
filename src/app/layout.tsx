@@ -61,6 +61,8 @@ export const metadata: Metadata = {
     },
 };
 
+import { ErrorBoundary } from "@/components/shared/error-boundary";
+
 export default function RootLayout({
     children,
 }: {
@@ -71,7 +73,9 @@ export default function RootLayout({
             <body className={`${inter.variable} ${outfit.variable} font-sans antialiased`}>
                 <Providers>
                     <MouseSpotlight />
-                    {children}
+                    <ErrorBoundary>
+                        {children}
+                    </ErrorBoundary>
                     <Toaster position="top-center" richColors />
                 </Providers>
             </body>

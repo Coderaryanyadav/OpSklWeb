@@ -33,12 +33,20 @@ export default function DashboardPage() {
         queryFn: async () => {
             if (!user) return null;
 
-            // Fetch real financial data
-            const { data: txs } = await supabase
-                .from('transactions')
-                .select('amount, type, status')
-                .eq('user_id', user.id)
-                .eq('status', 'completed');
+            // Fetch real financial data (Batching requests)
+            const [txsResponse, proposalsResponse] = await Promise.all([
+                supabase
+                    .from('transactions')
+                    .select('amount, type, status')
+                    .eq('user_id', user.id)
+                    .eq('status', 'completed'),
+                supabase
+                    .from('proposals')
+                    .select('gig_id, status')
+                    .eq(isClient ? 'id' : 'provider_id', user.id) // This logic depends on schema, usually providers have user_id
+            ]);
+
+            const txs = txsResponse.data || [];
 
             if (isClient) {
                 const { data: gigs } = await supabase
@@ -46,29 +54,35 @@ export default function DashboardPage() {
                     .select('*')
                     .eq('client_id', user.id);
 
-                const totalSpent = txs?.filter(t => t.type === 'payment' || t.type === 'withdrawal').reduce((acc, curr) => acc + curr.amount, 0) || 0;
+                const totalSpent = txs
+                    .filter(t => t.type === 'payment' || t.type === 'milestone_release')
+                    .reduce((acc, curr) => acc + curr.amount, 0);
 
                 const stats: ClientStats = {
                     activeProjects: gigs?.filter(g => g.status === 'in_progress').length || 0,
                     totalSpent,
-                    talentHired: 0, // Need proposals logic for this
+                    talentHired: proposalsResponse.data?.filter(p => p.status === 'accepted').length || 0,
                     openGigs: gigs?.filter(g => g.status === 'open').length || 0
                 };
 
                 return { gigs: gigs || [], stats };
             } else {
-                const totalEarnings = txs?.filter(t => t.type === 'deposit' || t.type === 'incoming').reduce((acc, curr) => acc + curr.amount, 0) || 0;
+                const totalEarnings = txs
+                    .filter(t => t.type === 'deposit' || t.type === 'incoming' || t.type === 'payment')
+                    .reduce((acc, curr) => acc + curr.amount, 0);
+
+                const activeProjects = proposalsResponse.data?.filter(p => p.status === 'accepted').length || 0;
 
                 const stats: ProviderStats = {
-                    activeProjects: 0, // Need proposals logic
+                    activeProjects,
                     totalEarnings,
-                    successRate: "98%", // Mock for now
+                    successRate: "98%", // Mock for now, should be calculated
                     xp: profile?.xp || 0
                 };
                 return { stats };
             }
         },
-        enabled: !!user
+        enabled: !!user && !!profile
     });
 
     if (isLoading || !profile) {

@@ -9,36 +9,58 @@ import { AnimatePresence } from "framer-motion";
 import { Search, SlidersHorizontal, Loader2, Sparkles, Filter, AlertCircle } from "lucide-react";
 import type { Gig } from "@/types";
 import { cn } from "@/lib/utils";
+import { useDebounce } from "@/hooks/use-debounce";
 
 export default function BrowseGigsPage() {
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
+    const [page, setPage] = useState(1);
+    const pageSize = 12;
 
-    const { data: gigs, isLoading, error } = useQuery({
-        queryKey: ['gigs', category, search],
+    const debouncedSearch = useDebounce(search, 500);
+
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['gigs', category, debouncedSearch, page],
         queryFn: async () => {
+            const start = (page - 1) * pageSize;
+            const end = start + pageSize - 1;
+
             let query = supabase
                 .from('gigs')
-                .select('*');
+                .select('*', { count: 'exact' });
 
             if (category !== "All") query = query.eq('category', category);
-            if (search) query = query.ilike('title', `%${search}%`);
+            if (debouncedSearch) {
+                // Improved search logic: check title and description
+                query = query.or(`title.ilike.%${debouncedSearch}%,description.ilike.%${debouncedSearch}%`);
+            }
 
-            const { data: gigs, error: gigsError } = await query.order('created_at', { ascending: false });
+            const { data: gigs, error: gigsError, count } = await query
+                .order('created_at', { ascending: false })
+                .range(start, end);
+
             if (gigsError) throw gigsError;
 
+            // Batch fetch client profiles for the gigs on this page
             const clientIds = Array.from(new Set(gigs?.map(g => g.client_id) || []));
             const { data: profiles } = await supabase
                 .from('profiles')
                 .select('id, name, avatar, verified')
                 .in('id', clientIds);
 
-            return (gigs || []).map(gig => ({
-                ...gig,
-                client: profiles?.find(p => p.id === gig.client_id)
-            })) as unknown as Gig[];
+            return {
+                gigs: (gigs || []).map(gig => ({
+                    ...gig,
+                    client: profiles?.find(p => p.id === gig.client_id)
+                })) as unknown as Gig[],
+                totalCount: count || 0
+            };
         }
     });
+
+    const gigs = data?.gigs;
+    const totalCount = data?.totalCount || 0;
+    const totalPages = Math.ceil(totalCount / pageSize);
 
     const categories = ["All", "Development", "Design", "Marketing", "Writing", "Blockchain"];
 
@@ -118,12 +140,47 @@ export default function BrowseGigsPage() {
                         <p className="text-muted-foreground max-w-sm italic">Adjust your filters or try a different specialty. New gigs are posted every few minutes.</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <AnimatePresence mode="popLayout">
-                            {gigs?.map((gig) => (
-                                <GigCard key={gig.id} gig={gig} />
-                            ))}
-                        </AnimatePresence>
+                    <div className="space-y-12">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <AnimatePresence mode="popLayout">
+                                {gigs?.map((gig) => (
+                                    <GigCard key={gig.id} gig={gig} />
+                                ))}
+                            </AnimatePresence>
+                        </div>
+
+                        {totalPages > 1 && (
+                            <div className="flex justify-center items-center gap-4 mt-16 pt-12 border-t border-white/5">
+                                <button
+                                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                                    disabled={page === 1}
+                                    className="h-12 px-6 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all font-black uppercase tracking-widest text-[10px]"
+                                >
+                                    Previous
+                                </button>
+                                <div className="flex gap-2">
+                                    {[...Array(totalPages)].map((_, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => setPage(i + 1)}
+                                            className={cn(
+                                                "h-12 w-12 rounded-xl flex items-center justify-center font-black transition-all",
+                                                page === i + 1 ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-white/5 text-muted-foreground hover:bg-white/10"
+                                            )}
+                                        >
+                                            {i + 1}
+                                        </button>
+                                    ))}
+                                </div>
+                                <button
+                                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={page === totalPages}
+                                    className="h-12 px-6 rounded-xl bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all font-black uppercase tracking-widest text-[10px]"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

@@ -7,8 +7,8 @@ export function useUser() {
         user,
         profile,
         loading,
-        isProvider: profile?.title?.includes('Provider') || !profile?.title?.includes('Client'),
-        isClient: profile?.title?.includes('Client'),
+        isProvider: profile?.role === 'provider',
+        isClient: profile?.role === 'client',
         signOut
     };
 }
