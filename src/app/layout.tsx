@@ -15,8 +15,49 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-    title: "OpSkl - Trust-First Gig Economy",
-    description: "India&apos;s verified gig economy platform connecting elite talent with premium opportunities.",
+    metadataBase: new URL('https://opskl.com'),
+    title: {
+        default: "OpSkl - Trust-First Gig Economy",
+        template: "%s | OpSkl"
+    },
+    description: "India's verified gig economy platform connecting elite talent with premium opportunities. Secure payments, verified profiles, and smart contracts.",
+    keywords: ["gig economy", "freelance india", "verified talent", "blockchain jobs", "secure freelance"],
+    authors: [{ name: "OpSkl Team" }],
+    creator: "OpSkl",
+    openGraph: {
+        type: "website",
+        locale: "en_IN",
+        url: "https://opskl.com",
+        title: "OpSkl - Trust-First Gig Economy",
+        description: "India's verified gig economy platform connecting elite talent with premium opportunities.",
+        siteName: "OpSkl",
+        images: [
+            {
+                url: "/og-image.jpg",
+                width: 1200,
+                height: 630,
+                alt: "OpSkl Platform",
+            },
+        ],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "OpSkl - Trust-First Gig Economy",
+        description: "India's verified gig economy platform connecting elite talent with premium opportunities.",
+        images: ["/og-image.jpg"],
+        creator: "@opskl",
+    },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
+    },
 };
 
 export default function RootLayout({

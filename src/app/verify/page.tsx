@@ -9,7 +9,6 @@ import {
     Upload,
     CheckCircle2,
     AlertCircle,
-    FileText,
     Loader2,
     Lock,
     Eye
@@ -61,8 +60,9 @@ export default function VerificationPage() {
             setTimeout(() => {
                 router.push("/dashboard");
             }, 3000);
-        } catch (err: any) {
-            toast.error("Verification failed: " + err.message);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Verification failed";
+            toast.error(message);
         } finally {
             setLoading(false);
         }

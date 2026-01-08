@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { Users, Plus, FileCheck, DollarSign, Briefcase, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -35,7 +34,7 @@ export function ClientDashboard({ profile, stats, gigs }: ClientDashboardProps) 
                         Business Command Center
                     </div>
                     <h1 className="text-4xl md:text-5xl font-black font-heading tracking-tight">
-                        Managing <span className="text-muted-foreground">{profile.name.split(' ')[0]}'s</span> Ecosystem
+                        Managing <span className="text-muted-foreground">{profile.name.split(' ')[0]}&apos;s</span> Ecosystem
                     </h1>
                 </div>
 

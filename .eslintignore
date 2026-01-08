@@ -1,0 +1,12 @@
+public/
+dist/
+.next/
+out/
+build/
+*.config.js
+*.config.ts
+coverage/
+playwright-report/
+test-results/
+scripts/
+e2e/

@@ -6,6 +6,7 @@ import type { Gig } from '@/types';
 // Mock Framer Motion to avoid animation issues and invalid DOM attributes
 vi.mock('framer-motion', () => ({
     motion: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
         div: ({ children, className, layout, initial, animate, exit, ...props }: any) => (
             <div className={className} {...props}>{children}</div>
         ),

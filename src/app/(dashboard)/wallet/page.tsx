@@ -59,8 +59,9 @@ export default function WalletPage() {
 
             toast.success(`₹${amount} added successfully to your secure vault`);
             setAmount("");
-        } catch (err: any) {
-            toast.error("Banking sync failed: " + err.message);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Banking sync failed";
+            toast.error(message);
         } finally {
             setLoading(false);
         }
