@@ -9,9 +9,16 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
-// Mock Auth wrapper for Navbar
 vi.mock('@/stores/auth-store', () => ({
   useAuthStore: () => ({ user: null, profile: null, signOut: vi.fn() }),
+}));
+
+// Mock Framer Motion
+vi.mock('framer-motion', () => ({
+  motion: {
+    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  },
+  AnimatePresence: ({ children }: any) => <>{children}</>,
 }));
 
 describe('Accessibility Checks', () => {
