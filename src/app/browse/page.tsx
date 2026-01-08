@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { GigCard } from "@/components/ui/gig-card";
-import { Search, SlidersHorizontal, Loader2 } from "lucide-react";
+import { Search, SlidersHorizontal, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Gig } from "@/types";
 
 // Sample data fallback if Supabase is empty
-const sampleGigs = [
+const sampleGigs: Gig[] = [
     {
         id: "1",
         title: "E-commerce Website Design",
@@ -51,103 +52,125 @@ const sampleGigs = [
 ];
 
 export default function BrowsePage() {
-    const [gigs, setGigs] = useState<any[]>([]);
+    const [gigs, setGigs] = useState<Gig[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
 
-    useEffect(() => {
-        async function fetchGigs() {
-            try {
-                const { data, error } = await supabase
-                    .from("gigs")
-                    .select("*")
-                    .order("created_at", { ascending: false });
+    const fetchGigs = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const { data, error: sbError } = await supabase
+                .from("gigs")
+                .select("*")
+                .order("created_at", { ascending: false });
 
-                if (error) throw error;
+            if (sbError) throw sbError;
 
-                if (data && data.length > 0) {
-                    setGigs(data);
-                } else {
-                    // Use sample data if DB is empty for demo purposes
-                    setGigs(sampleGigs);
-                }
-            } catch (err) {
-                console.error("Error fetching gigs:", err);
+            if (data && data.length > 0) {
+                setGigs(data);
+            } else {
                 setGigs(sampleGigs);
-            } finally {
-                setLoading(false);
             }
+        } catch (err) {
+            console.error("Error fetching gigs:", err);
+            setError("Failed to fetch jobs. Showing sample data.");
+            setGigs(sampleGigs);
+        } finally {
+            setLoading(false);
         }
-
-        fetchGigs();
     }, []);
 
-    const filteredGigs = gigs.filter(gig =>
-        gig.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        gig.skills.some((s: string) => s.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+    useEffect(() => {
+        fetchGigs();
+    }, [fetchGigs]);
+
+    const filteredGigs = useMemo(() => {
+        const query = searchQuery.toLowerCase().trim();
+        if (!query) return gigs;
+
+        return gigs.filter(gig =>
+            gig.title.toLowerCase().includes(query) ||
+            gig.skills.some(s => s.toLowerCase().includes(query)) ||
+            gig.description.toLowerCase().includes(query)
+        );
+    }, [gigs, searchQuery]);
 
     return (
         <div className="container mx-auto px-4 py-12 md:px-6">
             <div className="flex flex-col gap-8">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
                         <h1 className="text-4xl font-extrabold tracking-tight mb-2">Browse Opportunities</h1>
                         <p className="text-muted-foreground">Find high-paying gigs from verified Indian clients.</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <div className="relative group">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                             <input
                                 type="text"
-                                placeholder="Search by title or skills..."
-                                className="h-11 w-full md:w-80 rounded-xl bg-white/[0.03] border border-white/10 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                                placeholder="Search by title, skills or desc..."
+                                aria-label="Search gigs"
+                                className="h-11 w-full md:w-80 rounded-xl bg-white/[0.03] border border-white/10 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <Button variant="outline" size="icon" className="h-11 w-11 border-white/10 shrink-0">
+                        <Button variant="outline" size="icon" className="h-11 w-11 border-white/10 shrink-0 hover:bg-white/5" aria-label="Filters">
                             <SlidersHorizontal className="h-4 w-4" />
                         </Button>
                     </div>
-                </div>
+                </header>
+
+                {error && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center gap-2 p-4 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-500 text-sm"
+                    >
+                        <AlertCircle className="h-4 w-4" />
+                        {error}
+                    </motion.div>
+                )}
 
                 {/* Content */}
                 {loading ? (
-                    <div className="flex h-64 items-center justify-center">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <div className="flex flex-col h-64 items-center justify-center gap-4">
+                        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                        <p className="text-sm font-medium text-muted-foreground animate-pulse">Fetching opportunities...</p>
                     </div>
                 ) : (
-                    <>
+                    <AnimatePresence mode="popLayout">
                         {filteredGigs.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {filteredGigs.map((gig, idx) => (
-                                    <motion.div
-                                        key={gig.id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: idx * 0.05 }}
-                                    >
-                                        <GigCard gig={gig} />
-                                    </motion.div>
+                            <motion.div
+                                layout
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                            >
+                                {filteredGigs.map((gig) => (
+                                    <GigCard key={gig.id} gig={gig} />
                                 ))}
-                            </div>
+                            </motion.div>
                         ) : (
-                            <div className="flex flex-col items-center justify-center py-20 text-center">
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="flex flex-col items-center justify-center py-20 text-center"
+                            >
                                 <div className="h-16 w-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
                                     <Search className="h-8 w-8 text-muted-foreground" />
                                 </div>
-                                <h3 className="text-xl font-bold">No gigs found</h3>
+                                <h3 className="text-xl font-bold">No results found</h3>
                                 <p className="text-muted-foreground max-w-xs mx-auto mt-2">
-                                    Try adjusting your search or filters to find what you're looking for.
+                                    Try adjusting your search query for "{searchQuery}".
                                 </p>
-                                <Button variant="link" onClick={() => setSearchQuery("")} className="mt-4">
-                                    Clear all filters
+                                <Button variant="link" onClick={() => setSearchQuery("")} className="mt-4 text-primary">
+                                    Clear search query
                                 </Button>
-                            </div>
+                            </motion.div>
                         )}
-                    </>
+                    </AnimatePresence>
                 )}
             </div>
         </div>

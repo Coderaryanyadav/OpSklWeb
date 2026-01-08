@@ -1,63 +1,117 @@
 import React from "react";
 import Link from "next/link";
-import { ShieldCheck, Twitter, Github, Linkedin, Mail } from "lucide-react";
+import { ShieldCheck, Twitter, Github, Linkedin, ExternalLink } from "lucide-react";
+
+const footerLinks = {
+    platform: [
+        { name: "Browse Gigs", href: "/browse" },
+        { name: "Find Talent", href: "/talent" },
+        { name: "How it Works", href: "/how-it-works" },
+        { name: "Pricing", href: "/pricing" },
+    ],
+    resources: [
+        { name: "Help Center", href: "/help" },
+        { name: "Trust & Safety", href: "/trust" },
+        { name: "Dispute Resolution", href: "/dispute" },
+        { name: "Success Stories", href: "/stories" },
+    ],
+    legal: [
+        { name: "Privacy Policy", href: "/privacy" },
+        { name: "Terms of Service", href: "/terms" },
+        { name: "Cookie Policy", href: "/cookies" },
+    ],
+};
+
+const socialLinks = [
+    { name: "GitHub", icon: Github, href: "https://github.com/Coderaryanyadav/OpSklWeb" },
+    { name: "Twitter", icon: Twitter, href: "https://twitter.com/opskl" },
+    { name: "LinkedIn", icon: Linkedin, href: "https://linkedin.com/company/opskl" },
+];
 
 export function Footer() {
     return (
-        <footer className="border-t border-white/10 bg-background pt-16 pb-8">
+        <footer className="border-t border-white/10 bg-[#020617] pt-16 pb-8" aria-labelledby="footer-heading">
+            <h2 id="footer-heading" className="sr-only">Footer</h2>
             <div className="container mx-auto px-4 md:px-6">
-                <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
+                <div className="grid grid-cols-2 gap-12 md:grid-cols-4 lg:grid-cols-5">
                     <div className="col-span-2 lg:col-span-2">
-                        <Link href="/" className="flex items-center gap-2 mb-6">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                                <ShieldCheck className="h-5 w-5" />
+                        <Link href="/" className="flex items-center gap-2 mb-6 group focus:outline-none focus:ring-2 focus:ring-primary rounded-lg w-fit">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-transform group-hover:rotate-6">
+                                <ShieldCheck className="h-6 w-6" />
                             </div>
-                            <span className="text-xl font-bold tracking-tight">OpSkl</span>
+                            <span className="text-2xl font-black tracking-tighter">OpSkl</span>
                         </Link>
-                        <p className="mb-6 max-w-xs text-sm text-muted-foreground leading-relaxed">
-                            India's first trust-first gig economy platform. Empowering verified talent and clients through secure escrow payments and Aadhaar verification.
+                        <p className="mb-8 max-w-sm text-base text-muted-foreground leading-relaxed">
+                            India's first trust-first gig economy platform. We bridge the gap between premium clients and verified talent through secure Aadhaar-linked verification and smart escrow payments.
                         </p>
                         <div className="flex gap-4">
-                            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                                <Github className="h-5 w-5" />
-                            </Link>
-                            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                                <Twitter className="h-5 w-5" />
-                            </Link>
-                            <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                                <Linkedin className="h-5 w-5" />
-                            </Link>
+                            {socialLinks.map((social) => (
+                                <Link
+                                    key={social.name}
+                                    href={social.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition-all group"
+                                    aria-label={`Follow OpSkl on ${social.name}`}
+                                >
+                                    <social.icon className="h-5 w-5 transition-transform group-hover:scale-110" />
+                                </Link>
+                            ))}
                         </div>
                     </div>
-                    <div>
-                        <h3 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">Platform</h3>
-                        <ul className="space-y-4 text-sm text-muted-foreground">
-                            <li><Link href="/browse" className="hover:text-primary transition-colors">Browse Gigs</Link></li>
-                            <li><Link href="/talent" className="hover:text-primary transition-colors">Find Talent</Link></li>
-                            <li><Link href="/how-it-works" className="hover:text-primary transition-colors">How it Works</Link></li>
-                            <li><Link href="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
+
+                    <nav aria-label="Footer Platform Navigation">
+                        <h3 className="mb-6 text-sm font-black uppercase tracking-[0.2em] text-foreground/50">Platform</h3>
+                        <ul className="space-y-4 text-sm font-bold">
+                            {footerLinks.platform.map((link) => (
+                                <li key={link.name}>
+                                    <Link href={link.href} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 group">
+                                        {link.name}
+                                        <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
-                    </div>
-                    <div>
-                        <h3 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">Resources</h3>
-                        <ul className="space-y-4 text-sm text-muted-foreground">
-                            <li><Link href="#" className="hover:text-primary transition-colors">Help Center</Link></li>
-                            <li><Link href="#" className="hover:text-primary transition-colors">Trust & Safety</Link></li>
-                            <li><Link href="#" className="hover:text-primary transition-colors">Dispute Resolution</Link></li>
-                            <li><Link href="#" className="hover:text-primary transition-colors">Success Stories</Link></li>
+                    </nav>
+
+                    <nav aria-label="Footer Resources Navigation">
+                        <h3 className="mb-6 text-sm font-black uppercase tracking-[0.2em] text-foreground/50">Resources</h3>
+                        <ul className="space-y-4 text-sm font-bold">
+                            {footerLinks.resources.map((link) => (
+                                <li key={link.name}>
+                                    <Link href={link.href} className="text-muted-foreground hover:text-primary transition-colors">
+                                        {link.name}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
-                    </div>
-                    <div>
-                        <h3 className="mb-6 text-sm font-semibold uppercase tracking-wider text-foreground">Legal</h3>
-                        <ul className="space-y-4 text-sm text-muted-foreground">
-                            <li><Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
-                            <li><Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-                            <li><Link href="#" className="hover:text-primary transition-colors">Cookie Policy</Link></li>
+                    </nav>
+
+                    <nav aria-label="Footer Legal Navigation">
+                        <h3 className="mb-6 text-sm font-black uppercase tracking-[0.2em] text-foreground/50">Legal</h3>
+                        <ul className="space-y-4 text-sm font-bold">
+                            {footerLinks.legal.map((link) => (
+                                <li key={link.name}>
+                                    <Link href={link.href} className="text-muted-foreground hover:text-primary transition-colors">
+                                        {link.name}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
-                    </div>
+                    </nav>
                 </div>
-                <div className="mt-16 border-t border-white/5 pt-8 text-center text-xs text-muted-foreground">
-                    <p>© {new Date().getFullYear()} OpSkl. Built for the Indian Gig Economy. All rights reserved.</p>
+
+                <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <p className="text-sm text-muted-foreground font-medium">
+                        © {new Date().getFullYear()} OpSkl. Built with ❤️ for the Indian Gig Economy.
+                    </p>
+                    <div className="flex items-center gap-6 text-xs font-bold text-muted-foreground/50 uppercase tracking-widest">
+                        <span className="flex items-center gap-2">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            Systems Operational
+                        </span>
+                        <span>Version 1.0.2-beta</span>
+                    </div>
                 </div>
             </div>
         </footer>
