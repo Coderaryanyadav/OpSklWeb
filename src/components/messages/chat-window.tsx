@@ -65,7 +65,6 @@ export function ChatWindow({
                                 alt={selectedPartner.name}
                                 width={48}
                                 height={48}
-                                unoptimized
                             />
                         ) : (
                             <User className="h-6 w-6 text-zinc-500" />
