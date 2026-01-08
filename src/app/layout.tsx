@@ -1,34 +1,35 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
-import Providers from "@/components/shared/providers";
+import { Providers } from "@/components/providers";
 import { Toaster } from "sonner";
 
-export const viewport: Viewport = {
-    themeColor: "#020617",
-    width: "device-width",
-    initialScale: 1,
-};
+const inter = Inter({
+    subsets: ["latin"],
+    variable: "--font-inter",
+});
+
+const outfit = Outfit({
+    subsets: ["latin"],
+    variable: "--font-outfit",
+});
 
 export const metadata: Metadata = {
-    title: {
-        default: "OpSkl | India's Premium Gig Economy Platform",
-        template: "%s | OpSkl"
-    },
-    description: "Secure, verified, and trust-first platform for India's top freelancers and clients. Integrated Aadhaar verification and secure Escrow payments.",
-    keywords: ["freelance", "gig economy", "India", "hiring", "verified", "escrow", "Aadhaar"],
+    title: "OpSkl - Trust-First Gig Economy",
+    description: "India's verified gig economy platform connecting elite talent with premium opportunities.",
 };
 
 export default function RootLayout({
     children,
-}: {
+}: Readonly<{
     children: React.ReactNode;
-}) {
+}>) {
     return (
-        <html lang="en" className="dark scroll-smooth">
-            <body className="antialiased min-h-screen selection:bg-primary/30 selection:text-white">
+        <html lang="en" className="dark">
+            <body className={`${inter.variable} ${outfit.variable} font-sans antialiased`}>
                 <Providers>
                     {children}
-                    <Toaster position="top-center" richColors closeButton expand />
+                    <Toaster position="top-center" richColors />
                 </Providers>
             </body>
         </html>

@@ -39,7 +39,6 @@ export default function SignupPage() {
 
             if (error) throw error;
 
-            // Create a profile in the public profiles table
             if (data.user) {
                 const { error: profileError } = await supabase
                     .from('profiles')
@@ -47,7 +46,12 @@ export default function SignupPage() {
                         id: data.user.id,
                         name: formData.name,
                         title: formData.role === 'provider' ? 'Service Provider' : 'Professional Client',
+                        role: formData.role,
                         skills: [],
+                        xp: 0,
+                        rating: 0,
+                        verified: false,
+                        balance: 0,
                     });
 
                 if (profileError) console.error("Profile creation error:", profileError);
@@ -55,9 +59,8 @@ export default function SignupPage() {
 
             toast.success("Account created! Please check your email for verification.");
             router.push("/login");
-        } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : "Failed to create account";
-            toast.error(message);
+        } catch (err: any) {
+            toast.error(err.message || "Failed to create account");
         } finally {
             setLoading(false);
         }
@@ -133,9 +136,7 @@ export default function SignupPage() {
 
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            if (formData.role) setStep(2);
-                                        }}
+                                        onClick={() => setStep(2)}
                                         className="w-full h-14 rounded-2xl bg-white text-background font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all"
                                     >
                                         Continue <ArrowRight className="h-5 w-5" />

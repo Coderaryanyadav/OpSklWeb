@@ -11,6 +11,8 @@ export type Profile = {
     location?: string;
     role: 'provider' | 'client';
     rate?: string | number;
+    balance: number;
+    created_at: string;
 };
 
 export type Gig = {
@@ -30,6 +32,26 @@ export type Gig = {
         avatar?: string;
         verified: boolean;
     };
+};
+
+export type Message = {
+    id: number;
+    sender_id: string;
+    receiver_id: string;
+    content: string;
+    created_at: string;
+    is_read: boolean;
+};
+
+export type Transaction = {
+    id: number;
+    user_id: string;
+    type: 'deposit' | 'withdrawal' | 'escrow_hold' | 'escrow_release';
+    amount: number;
+    status: 'pending' | 'completed' | 'failed';
+    gig_id?: number;
+    created_at: string;
+    metadata?: Record<string, any>;
 };
 
 export type NavbarItem = {

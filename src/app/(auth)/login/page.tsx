@@ -4,36 +4,36 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
-import { useAuthStore } from "@/stores/auth-store";
 import { motion } from "framer-motion";
 import { ShieldCheck, Mail, Lock, Loader2, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 export default function LoginPage() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
+
     const router = useRouter();
-    const setUser = useAuthStore((state) => state.setUser);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
+            const { error } = await supabase.auth.signInWithPassword({
+                email: formData.email,
+                password: formData.password,
             });
 
             if (error) throw error;
 
-            setUser(data.user);
-            toast.success("Welcome back to OpSkl!");
+            toast.success("Welcome back!");
             router.push("/dashboard");
-        } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : "Failed to log in";
-            toast.error(message);
+            router.refresh();
+        } catch (err: any) {
+            toast.error(err.message || "Failed to log in");
         } finally {
             setLoading(false);
         }
@@ -41,7 +41,6 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-            {/* Background Gradients */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none -z-10">
                 <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[150px] rounded-full" />
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 blur-[150px] rounded-full" />
@@ -60,31 +59,28 @@ export default function LoginPage() {
                         <span className="text-3xl font-black tracking-tight font-heading">OpSkl</span>
                     </Link>
                     <h1 className="text-4xl font-black font-heading tracking-tight mb-2">Welcome Back</h1>
-                    <p className="text-muted-foreground font-medium">Continue your trusted gig journey.</p>
+                    <p className="text-muted-foreground font-medium">Access your secure workspace.</p>
                 </div>
 
-                <div className="rounded-[2.5rem] border border-white/10 bg-white/[0.02] backdrop-blur-3xl p-8 md:p-12 shadow-2xl relative">
+                <div className="rounded-[2.5rem] border border-white/10 bg-white/[0.02] backdrop-blur-3xl p-8 md:p-12 shadow-2xl">
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Email Address</label>
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Email</label>
                             <div className="relative group">
                                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                                 <input
                                     type="email"
                                     required
-                                    placeholder="name@company.com"
+                                    placeholder="john@example.com"
                                     className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 focus:ring-2 focus:ring-primary/50 outline-none transition-all font-medium"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Password</label>
-                                <Link href="#" className="text-[10px] font-black uppercase tracking-[0.2em] text-primary hover:underline">Forgot?</Link>
-                            </div>
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Password</label>
                             <div className="relative group">
                                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                                 <input
@@ -92,8 +88,8 @@ export default function LoginPage() {
                                     required
                                     placeholder="••••••••"
                                     className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 focus:ring-2 focus:ring-primary/50 outline-none transition-all font-medium"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    value={formData.password}
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                 />
                             </div>
                         </div>
@@ -101,10 +97,10 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full h-14 rounded-2xl bg-primary text-white font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100"
+                            className="w-full h-14 rounded-2xl bg-primary text-white font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-xl shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
                         >
                             {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
-                                <>Sign In <ArrowRight className="h-5 w-5" /></>
+                                <>Log In <ArrowRight className="h-5 w-5" /></>
                             )}
                         </button>
                     </form>

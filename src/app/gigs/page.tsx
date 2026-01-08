@@ -6,8 +6,9 @@ import { GigCard } from "@/components/gigs/gig-card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/client";
 import { AnimatePresence } from "framer-motion";
-import { Search, SlidersHorizontal, Loader2, Sparkles, Filter, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Search, SlidersHorizontal, Loader2, Sparkles, Filter, AlertCircle } from "lucide-react";
 import type { Gig } from "@/types";
+import { cn } from "@/lib/utils";
 
 export default function BrowseGigsPage() {
     const [search, setSearch] = useState("");
@@ -18,19 +19,24 @@ export default function BrowseGigsPage() {
         queryFn: async () => {
             let query = supabase
                 .from('gigs')
-                .select('*, client:client_id(name, verified)');
+                .select('*');
 
-            if (category !== "All") {
-                query = query.eq('category', category);
-            }
+            if (category !== "All") query = query.eq('category', category);
+            if (search) query = query.ilike('title', `%${search}%`);
 
-            if (search) {
-                query = query.ilike('title', `%${search}%`);
-            }
+            const { data: gigs, error: gigsError } = await query.order('created_at', { ascending: false });
+            if (gigsError) throw gigsError;
 
-            const { data, error } = await query.order('created_at', { ascending: false });
-            if (error) throw error;
-            return data as unknown as Gig[];
+            const clientIds = Array.from(new Set(gigs?.map(g => g.client_id) || []));
+            const { data: profiles } = await supabase
+                .from('profiles')
+                .select('id, name, avatar, verified')
+                .in('id', clientIds);
+
+            return (gigs || []).map(gig => ({
+                ...gig,
+                client: profiles?.find(p => p.id === gig.client_id)
+            })) as unknown as Gig[];
         }
     });
 
@@ -41,7 +47,6 @@ export default function BrowseGigsPage() {
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6">
-                {/* Header */}
                 <header className="mb-16">
                     <div className="max-w-3xl">
                         <div className="flex items-center gap-2 text-primary font-black uppercase text-[10px] tracking-[0.3em] mb-4">
@@ -54,7 +59,6 @@ export default function BrowseGigsPage() {
                         </h1>
                     </div>
 
-                    {/* Search & Filter Bar */}
                     <div className="flex flex-col lg:flex-row gap-4 items-center p-4 rounded-[2.5rem] bg-white/[0.02] border border-white/5 backdrop-blur-xl">
                         <div className="relative flex-1 w-full group">
                             <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
@@ -72,11 +76,12 @@ export default function BrowseGigsPage() {
                                 <button
                                     key={cat}
                                     onClick={() => setCategory(cat)}
-                                    className={
+                                    className={cn(
+                                        "h-16 px-8 rounded-2xl font-black uppercase tracking-widest text-xs transition-all",
                                         category === cat
-                                            ? "h-16 px-8 rounded-2xl font-black uppercase tracking-widest text-xs transition-all bg-primary text-white shadow-xl shadow-primary/20"
-                                            : "h-16 px-8 rounded-2xl font-black uppercase tracking-widest text-xs transition-all bg-white/5 text-muted-foreground hover:bg-white/10"
-                                    }
+                                            ? "bg-primary text-white shadow-xl shadow-primary/20"
+                                            : "bg-white/5 text-muted-foreground hover:bg-white/10"
+                                    )}
                                 >
                                     {cat}
                                 </button>
@@ -88,7 +93,6 @@ export default function BrowseGigsPage() {
                     </div>
                 </header>
 
-                {/* content */}
                 {isLoading ? (
                     <div className="py-32 flex flex-col items-center justify-center gap-6">
                         <div className="relative">

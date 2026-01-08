@@ -29,6 +29,8 @@ export interface Database {
                     rating: number
                     verified: boolean
                     location: string | null
+                    role: 'provider' | 'client'
+                    balance: number
                 }
                 Insert: {
                     id: string
@@ -42,6 +44,8 @@ export interface Database {
                     rating?: number
                     verified?: boolean
                     location?: string | null
+                    role: 'provider' | 'client'
+                    balance?: number
                 }
                 Update: {
                     id?: string
@@ -55,6 +59,8 @@ export interface Database {
                     rating?: number
                     verified?: boolean
                     location?: string | null
+                    role?: 'provider' | 'client'
+                    balance?: number
                 }
             }
             gigs: {
@@ -96,6 +102,64 @@ export interface Database {
                     location?: string | null
                     client_id?: string
                     status?: 'open' | 'in_progress' | 'completed' | 'cancelled'
+                }
+            }
+            messages: {
+                Row: {
+                    id: number
+                    created_at: string
+                    sender_id: string
+                    receiver_id: string
+                    content: string
+                    is_read: boolean
+                }
+                Insert: {
+                    id?: number
+                    created_at?: string
+                    sender_id: string
+                    receiver_id: string
+                    content: string
+                    is_read?: boolean
+                }
+                Update: {
+                    id?: number
+                    created_at?: string
+                    sender_id?: string
+                    receiver_id?: string
+                    content?: string
+                    is_read?: boolean
+                }
+            }
+            transactions: {
+                Row: {
+                    id: number
+                    created_at: string
+                    user_id: string
+                    type: 'deposit' | 'withdrawal' | 'escrow_hold' | 'escrow_release'
+                    amount: number
+                    status: 'pending' | 'completed' | 'failed'
+                    gig_id: number | null
+                    metadata: Json | null
+                }
+                Insert: {
+                    id?: number
+                    created_at?: string
+                    user_id: string
+                    type: 'deposit' | 'withdrawal' | 'escrow_hold' | 'escrow_release'
+                    amount: number
+                    status?: 'pending' | 'completed' | 'failed'
+                    gig_id?: number | null
+                    metadata?: Json | null
+                }
+                Update: {
+                    id?: number
+                    created_at?: string
+                    user_id?: string
+                    type?: 'deposit' | 'withdrawal' | 'escrow_hold' | 'escrow_release'
+                    amount?: number
+                    status?: 'pending' | 'completed' | 'failed'
+                    gig_id?: number | null
+                    metadata?: Json | null
                 }
             }
         }

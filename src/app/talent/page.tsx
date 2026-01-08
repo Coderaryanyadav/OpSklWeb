@@ -19,7 +19,8 @@ export default function BrowseTalentPage() {
         queryFn: async () => {
             let query = supabase
                 .from('profiles')
-                .select('*');
+                .select('*')
+                .eq('role', 'provider');
 
             if (skill !== "All") {
                 query = query.contains('skills', [skill]);
@@ -42,7 +43,6 @@ export default function BrowseTalentPage() {
             <Navbar />
 
             <div className="container mx-auto px-4 md:px-6">
-                {/* Header */}
                 <header className="mb-16">
                     <div className="max-w-3xl">
                         <div className="flex items-center gap-2 text-primary font-black uppercase text-[10px] tracking-[0.3em] mb-4">
@@ -50,12 +50,11 @@ export default function BrowseTalentPage() {
                             Verified Talent Network
                         </div>
                         <h1 className="text-5xl md:text-7xl font-black font-heading tracking-tighter mb-8 leading-tight">
-                            India&apos;s Elite <br />
+                            India's Elite <br />
                             <span className="text-muted-foreground">Service Providers.</span>
                         </h1>
                     </div>
 
-                    {/* Search & Filter Bar */}
                     <div className="flex flex-col lg:flex-row gap-4 items-center p-4 rounded-[2.5rem] bg-white/[0.02] border border-white/5 backdrop-blur-xl">
                         <div className="relative flex-1 w-full group">
                             <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
@@ -90,7 +89,6 @@ export default function BrowseTalentPage() {
                     </div>
                 </header>
 
-                {/* content */}
                 {isLoading ? (
                     <div className="py-32 flex flex-col items-center justify-center gap-6">
                         <div className="relative">
