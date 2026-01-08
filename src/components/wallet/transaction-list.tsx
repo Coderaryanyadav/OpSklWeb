@@ -50,8 +50,8 @@ export function TransactionList({ userId }: { userId?: string }) {
                 <div key={tx.id} className="p-5 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between hover:bg-white/10 transition-colors group">
                     <div className="flex items-center gap-4">
                         <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${tx.type === 'deposit' || tx.type === 'incoming'
-                                ? 'bg-emerald-500/10 text-emerald-500'
-                                : 'bg-red-500/10 text-red-500'
+                            ? 'bg-emerald-500/10 text-emerald-500'
+                            : 'bg-red-500/10 text-red-500'
                             }`}>
                             {tx.type === 'deposit' || tx.type === 'incoming'
                                 ? <ArrowDownLeft className="h-6 w-6" />
@@ -69,8 +69,8 @@ export function TransactionList({ userId }: { userId?: string }) {
                     </div>
                     <div className="text-right">
                         <div className={`text-lg font-black font-heading ${tx.type === 'deposit' || tx.type === 'incoming'
-                                ? 'text-emerald-500'
-                                : 'text-white'
+                            ? 'text-emerald-500'
+                            : 'text-white'
                             }`}>
                             {tx.type === 'deposit' || tx.type === 'incoming' ? '+' : '-'}₹{tx.amount.toLocaleString()}
                         </div>
