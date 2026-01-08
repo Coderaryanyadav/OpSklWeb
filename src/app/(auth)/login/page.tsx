@@ -31,8 +31,9 @@ export default function LoginPage() {
             setUser(data.user);
             toast.success("Welcome back to OpSkl!");
             router.push("/dashboard");
-        } catch (err: any) {
-            toast.error(err.message || "Failed to log in");
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : "Failed to log in";
+            toast.error(message);
         } finally {
             setLoading(false);
         }

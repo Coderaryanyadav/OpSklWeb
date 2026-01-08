@@ -6,15 +6,14 @@ import { Navbar } from "@/components/layout/navbar";
 import { motion } from "framer-motion";
 import {
     TrendingUp,
-    Users,
     Briefcase,
     DollarSign,
     Clock,
     CheckCircle2,
     Star,
-    ChevronRight,
     ArrowUpRight,
-    Plus
+    Plus,
+    ShieldCheck
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";

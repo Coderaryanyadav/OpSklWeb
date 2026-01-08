@@ -10,6 +10,7 @@ export type Profile = {
     verified: boolean;
     location?: string;
     role: 'provider' | 'client';
+    rate?: string | number;
 };
 
 export type Gig = {

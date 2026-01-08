@@ -5,8 +5,8 @@ import { Navbar } from "@/components/layout/navbar";
 import { GigCard } from "@/components/gigs/gig-card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/client";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, SlidersHorizontal, Loader2, Sparkles, Filter, AlertCircle } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
+import { Search, SlidersHorizontal, Loader2, Sparkles, Filter, AlertCircle, CheckCircle2 } from "lucide-react";
 import type { Gig } from "@/types";
 
 export default function BrowseGigsPage() {
@@ -72,12 +72,11 @@ export default function BrowseGigsPage() {
                                 <button
                                     key={cat}
                                     onClick={() => setCategory(cat)}
-                                    className={cn(
-                                        "h-16 px-8 rounded-2xl font-black uppercase tracking-widest text-xs transition-all",
+                                    className={
                                         category === cat
-                                            ? "bg-primary text-white shadow-xl shadow-primary/20"
-                                            : "bg-white/5 text-muted-foreground hover:bg-white/10"
-                                    )}
+                                            ? "h-16 px-8 rounded-2xl font-black uppercase tracking-widest text-xs transition-all bg-primary text-white shadow-xl shadow-primary/20"
+                                            : "h-16 px-8 rounded-2xl font-black uppercase tracking-widest text-xs transition-all bg-white/5 text-muted-foreground hover:bg-white/10"
+                                    }
                                 >
                                     {cat}
                                 </button>

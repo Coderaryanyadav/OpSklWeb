@@ -5,8 +5,9 @@ import { Navbar } from "@/components/layout/navbar";
 import { TalentCard } from "@/components/talent/talent-card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/client";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { Search, SlidersHorizontal, Loader2, Users, AlertCircle, Filter } from "lucide-react";
+import { cn } from "@/lib/utils";
 import type { Profile } from "@/types";
 
 export default function BrowseTalentPage() {

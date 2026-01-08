@@ -3,7 +3,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ShieldCheck, Star, Zap, MapPin, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 import type { Profile } from "@/types";
 

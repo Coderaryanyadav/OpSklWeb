@@ -4,11 +4,11 @@ import { supabase } from '@/lib/supabase/client';
 import type { Profile } from '@/types';
 
 interface AuthState {
-    user: any | null;
+    user: { id: string; email?: string } | null;
     profile: Profile | null;
     loading: boolean;
     initialized: boolean;
-    setUser: (user: any | null) => void;
+    setUser: (user: { id: string; email?: string } | null) => void;
     setProfile: (profile: Profile | null) => void;
     signOut: () => Promise<void>;
     init: () => Promise<void>;

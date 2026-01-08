@@ -72,7 +72,7 @@ export default function PostGigPage() {
         setLoading(true);
 
         try {
-            const { data, error } = await supabase
+            const { error } = await supabase
                 .from('gigs')
                 .insert({
                     title: formData.title,
@@ -91,8 +91,9 @@ export default function PostGigPage() {
 
             toast.success("Project broadcasted to the network!");
             router.push("/dashboard");
-        } catch (err: any) {
-            toast.error(err.message || "Failed to publish gig");
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : "Failed to publish gig";
+            toast.error(message);
         } finally {
             setLoading(false);
         }

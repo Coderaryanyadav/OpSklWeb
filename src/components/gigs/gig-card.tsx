@@ -2,8 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ShieldCheck, MapPin, IndianRupee, Clock, ArrowRight, Tag } from "lucide-react";
-import { cn, formatCurrency } from "@/lib/utils";
+import { ShieldCheck, MapPin, IndianRupee, Clock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { Gig } from "@/types";
 
