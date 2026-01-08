@@ -32,7 +32,6 @@ export function TalentCard({ profile }: TalentCardProps) {
                                         width={64}
                                         height={64}
                                         className="h-full w-full object-cover"
-                                        unoptimized
                                     />
                                 ) : (
                                     <span className="text-2xl font-black">{profile.name.charAt(0)}</span>
