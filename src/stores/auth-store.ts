@@ -24,27 +24,58 @@ export const useAuthStore = create<AuthState>()(
             setUser: (user) => set({ user }),
             setProfile: (profile) => set({ profile }),
             signOut: async () => {
-                await supabase.auth.signOut();
-                set({ user: null, profile: null });
+                try {
+                    await supabase.auth.signOut();
+                } catch (error) {
+                    console.error('Logout error:', error);
+                }
+                // Clear ALL state on logout
+                set({ user: null, profile: null, loading: false, initialized: false });
+                // Clear localStorage
+                localStorage.removeItem('opskl-auth-storage');
             },
             init: async () => {
                 if (get().initialized) return;
                 set({ loading: true });
 
-                const { data: { session } } = await supabase.auth.getSession();
+                try {
+                    const { data: { session } } = await supabase.auth.getSession();
 
-                if (session?.user) {
-                    set({ user: session.user });
+                    if (session?.user) {
+                        set({ user: session.user });
 
-                    const { data: profile } = await supabase
-                        .from('profiles')
-                        .select('*')
-                        .eq('id', session.user.id)
-                        .single();
+                        const { data: profile } = await supabase
+                            .from('profiles')
+                            .select('*')
+                            .eq('id', session.user.id)
+                            .single();
 
-                    if (profile) {
-                        set({ profile: profile as Profile });
+                        if (profile) {
+                            set({ profile: profile as Profile });
+                        }
+                    } else {
+                        // No session - clear state
+                        set({ user: null, profile: null });
                     }
+
+                    // Listen for auth state changes (session expiry, logout, etc.)
+                    supabase.auth.onAuthStateChange((event, session) => {
+                        if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED' && !session) {
+                            // Session expired or user logged out
+                            set({ user: null, profile: null });
+                            localStorage.removeItem('opskl-auth-storage');
+
+                            // Redirect to login if not already there
+                            if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+                                window.location.href = '/login?session_expired=true';
+                            }
+                        } else if (event === 'SIGNED_IN' && session?.user) {
+                            set({ user: session.user });
+                        }
+                    });
+                } catch (error) {
+                    console.error('Auth initialization error:', error);
+                    set({ user: null, profile: null });
                 }
 
                 set({ loading: false, initialized: true });

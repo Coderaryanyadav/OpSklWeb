@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAuthStore } from "@/stores/auth-store";
+import { useQueryClient } from "@tanstack/react-query";
 import {
     IndianRupee,
     Plus,
@@ -22,6 +23,7 @@ import { TransactionList } from "@/components/wallet/transaction-list";
 
 export default function WalletPage() {
     const { profile, setProfile } = useAuthStore();
+    const queryClient = useQueryClient();
     const [amount, setAmount] = useState("");
     const [loading, setLoading] = useState(false);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -57,6 +59,10 @@ export default function WalletPage() {
             if (profile) {
                 setProfile({ ...profile, balance: (Number(profile.balance) || 0) + numAmount });
             }
+
+            // 3. Invalidate queries to refresh transaction list
+            await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+            await queryClient.invalidateQueries({ queryKey: ['dashboard_stats'] });
 
             toast.success(`₹${amount} added successfully to your secure vault`);
             setAmount("");
