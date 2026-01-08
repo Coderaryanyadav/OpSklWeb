@@ -99,7 +99,7 @@ export default function HomePage() {
                                 transition={{ delay: 0.4 + idx * 0.1 }}
                                 className="p-8 rounded-[2rem] glass-card group cursor-default"
                             >
-                                <div className="h-14 w-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-6">
+                                <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6">
                                     <feature.icon className="h-7 w-7" />
                                 </div>
                                 <h3 className="text-xl font-black mb-3 tracking-tight">{feature.title}</h3>
@@ -132,7 +132,7 @@ export default function HomePage() {
             {/* CTA Section */}
             <section className="py-20">
                 <div className="container mx-auto px-4 md:px-6">
-                    <div className="max-w-4xl mx-auto text-center p-12 md:p-16 rounded-[3rem] bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/20">
+                    <div className="max-w-4xl mx-auto text-center p-12 md:p-16 rounded-[3rem] bg-gradient-to-br from-primary/20 to-accent/20">
                         <h2 className="text-4xl md:text-5xl font-black font-heading mb-6 tracking-tight">
                             Ready to Build Your Legacy?
                         </h2>
