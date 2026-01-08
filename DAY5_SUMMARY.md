@@ -40,8 +40,9 @@ We created 4 key artifacts for submission/demo:
 ## ✅ Final Health Check
 - **Linting**: Clean.
 - **Tests**: 100% Passing (including Accessibility & E2E).
-- **Build**: Production Build Verified.
+- **Build**: Production Build Verified (Fixed Tailwind `@apply` errors causing layout breakage).
 - **Accessibility**: A+ Score in Lighthouse & Axe.
+- **UI Polish**: Resolved layout issues in Signup/Login due to CSS failures; upgraded to Premium Glass cards.
 
 ## 🏁 Conclusion
 The OpSkl Web Platform is fully implemented, tested, polished, and documented.

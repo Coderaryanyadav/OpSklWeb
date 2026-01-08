@@ -90,8 +90,8 @@ export default function SignupPage() {
                     <p className="text-muted-foreground font-medium">Verify your identity, build your legacy.</p>
                 </div>
 
-                <div className="rounded-[2.5rem] border border-white/10 bg-white/[0.02] backdrop-blur-3xl p-8 md:p-12 shadow-2xl relative">
-                    <form onSubmit={handleSignup} className="space-y-6">
+                <div className="glass-card rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative border border-white/10">
+                    <form onSubmit={handleSignup} className="space-y-8">
                         <AnimatePresence mode="wait">
                             {step === 1 ? (
                                 <motion.div
@@ -99,38 +99,48 @@ export default function SignupPage() {
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: -20 }}
-                                    className="space-y-6"
+                                    className="space-y-8"
                                 >
                                     <div className="space-y-4">
-                                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1 block">Choose Your Role</label>
+                                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 ml-1 block">Choose Your Role</label>
                                         <div className="grid grid-cols-2 gap-4">
                                             <button
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, role: 'provider' })}
                                                 className={cn(
-                                                    "p-6 rounded-3xl border text-left transition-all group",
+                                                    "p-6 rounded-3xl border text-left transition-all duration-300 group relative overflow-hidden",
                                                     formData.role === 'provider'
-                                                        ? "border-primary bg-primary/10"
-                                                        : "border-white/5 bg-white/5 hover:border-white/20"
+                                                        ? "border-primary bg-primary/10 shadow-lg shadow-primary/10 ring-1 ring-primary/50"
+                                                        : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20"
                                                 )}
                                             >
-                                                <Briefcase className={cn("h-6 w-6 mb-3 transition-colors", formData.role === 'provider' ? "text-primary" : "text-muted-foreground")} />
-                                                <div className="font-black text-sm uppercase tracking-tight mb-1">Freelancer</div>
-                                                <div className="text-[10px] text-muted-foreground font-medium leading-tight">Find premium gigs and grow your XP.</div>
+                                                {formData.role === 'provider' && (
+                                                    <motion.div layoutId="role-check" className="absolute top-4 right-4 text-primary">
+                                                        <CheckCircle2 className="h-5 w-5" />
+                                                    </motion.div>
+                                                )}
+                                                <Briefcase className={cn("h-8 w-8 mb-4 transition-colors duration-300", formData.role === 'provider' ? "text-primary" : "text-zinc-500 group-hover:text-zinc-300")} />
+                                                <div className={cn("font-black text-sm uppercase tracking-tight mb-2 transition-colors", formData.role === 'provider' ? "text-white" : "text-zinc-400 group-hover:text-white")}>Freelancer</div>
+                                                <div className="text-[11px] text-zinc-500 font-medium leading-relaxed">Find premium gigs and grow your XP.</div>
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, role: 'client' })}
                                                 className={cn(
-                                                    "p-6 rounded-3xl border text-left transition-all group",
+                                                    "p-6 rounded-3xl border text-left transition-all duration-300 group relative overflow-hidden",
                                                     formData.role === 'client'
-                                                        ? "border-accent bg-accent/10"
-                                                        : "border-white/5 bg-white/5 hover:border-white/20"
+                                                        ? "border-accent bg-accent/10 shadow-lg shadow-accent/10 ring-1 ring-accent/50"
+                                                        : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20"
                                                 )}
                                             >
-                                                <Building className={cn("h-6 w-6 mb-3 transition-colors", formData.role === 'client' ? "text-accent" : "text-muted-foreground")} />
-                                                <div className="font-black text-sm uppercase tracking-tight mb-1">Business</div>
-                                                <div className="text-[10px] text-muted-foreground font-medium leading-tight">Hire verified talent with secure escrow.</div>
+                                                {formData.role === 'client' && (
+                                                    <motion.div layoutId="role-check" className="absolute top-4 right-4 text-accent">
+                                                        <CheckCircle2 className="h-5 w-5" />
+                                                    </motion.div>
+                                                )}
+                                                <Building className={cn("h-8 w-8 mb-4 transition-colors duration-300", formData.role === 'client' ? "text-accent" : "text-zinc-500 group-hover:text-zinc-300")} />
+                                                <div className={cn("font-black text-sm uppercase tracking-tight mb-2 transition-colors", formData.role === 'client' ? "text-white" : "text-zinc-400 group-hover:text-white")}>Business</div>
+                                                <div className="text-[11px] text-zinc-500 font-medium leading-relaxed">Hire verified talent with secure escrow.</div>
                                             </button>
                                         </div>
                                     </div>
@@ -138,7 +148,7 @@ export default function SignupPage() {
                                     <button
                                         type="button"
                                         onClick={() => setStep(2)}
-                                        className="w-full h-14 rounded-2xl bg-white text-background font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                        className="w-full h-14 rounded-2xl bg-white text-background font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl hover:shadow-2xl hover:shadow-white/10"
                                     >
                                         Continue <ArrowRight className="h-5 w-5" />
                                     </button>
