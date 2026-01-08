@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Briefcase, DollarSign, MapPin, ShieldCheck } from "lucide-react";
+import { DollarSign, MapPin, ShieldCheck } from "lucide-react";
 import type { Gig } from "@/types";
 import Link from "next/link";
 
