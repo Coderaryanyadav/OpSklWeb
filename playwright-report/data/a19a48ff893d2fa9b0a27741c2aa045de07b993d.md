@@ -1,0 +1,68 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e7] [cursor=pointer]:
+    - img [ref=e8]
+  - alert [ref=e11]
+  - generic [ref=e12]:
+    - navigation [ref=e13]:
+      - generic [ref=e15]:
+        - link "OpSkl" [ref=e16] [cursor=pointer]:
+          - /url: /
+          - img [ref=e18]
+          - generic [ref=e21]: OpSkl
+        - button "Toggle mobile menu" [ref=e22]:
+          - img [ref=e23]
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - img [ref=e28]
+        - text: India's Trust-First Gig Economy
+      - heading "Verified Talent. Premium Opportunities." [level=1] [ref=e30]:
+        - text: Verified Talent.
+        - text: Premium Opportunities.
+      - paragraph [ref=e31]: Connect with elite service providers or find your next career-defining project. Every profile verified. Every payment secured.
+      - generic [ref=e32]:
+        - link "Get Started" [ref=e33] [cursor=pointer]:
+          - /url: /signup
+          - text: Get Started
+          - img [ref=e34]
+        - link "Browse Marketplace" [ref=e36] [cursor=pointer]:
+          - /url: /gigs
+    - generic [ref=e39]:
+      - generic [ref=e40]:
+        - img [ref=e42]
+        - heading "Aadhaar Verified" [level=3] [ref=e45]
+        - paragraph [ref=e46]: Every member verified through government ID. No fake profiles, no catfishing.
+      - generic [ref=e47]:
+        - img [ref=e49]
+        - heading "Instant Escrow" [level=3] [ref=e51]
+        - paragraph [ref=e52]: UPI-powered payment holds. Funds released only when both parties confirm completion.
+      - generic [ref=e53]:
+        - img [ref=e55]
+        - heading "Reputation System" [level=3] [ref=e57]
+        - paragraph [ref=e58]: Earn XP and build your legacy. Top performers get premium access and higher visibility.
+    - generic [ref=e61]:
+      - generic [ref=e62]:
+        - generic [ref=e63]: 10K+
+        - generic [ref=e64]: Verified Professionals
+      - generic [ref=e65]:
+        - generic [ref=e66]: ₹5Cr+
+        - generic [ref=e67]: Paid Out Securely
+      - generic [ref=e68]:
+        - generic [ref=e69]: 98%
+        - generic [ref=e70]: Success Rate
+      - generic [ref=e71]:
+        - generic [ref=e72]: 24/7
+        - generic [ref=e73]: Escrow Protection
+    - generic [ref=e76]:
+      - heading "Ready to Build Your Legacy?" [level=2] [ref=e77]
+      - paragraph [ref=e78]: Join thousands of verified professionals and businesses transforming India's gig economy.
+      - link "Create Account" [ref=e79] [cursor=pointer]:
+        - /url: /signup
+        - text: Create Account
+        - img [ref=e80]
+    - contentinfo [ref=e83]:
+      - paragraph [ref=e85]: © 2026 OpSkl. Trust-First Gig Economy for India.
+  - region "Notifications alt+T"
+```

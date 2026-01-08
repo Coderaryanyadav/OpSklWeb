@@ -8,6 +8,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/tests/setup.ts',
+    exclude: ['node_modules', 'e2e'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
@@ -18,6 +19,7 @@ export default defineConfig({
         '**/*.config.*',
         '**/mockData',
         'scripts/',
+        'e2e/',
       ],
       thresholds: {
         lines: 80,
