@@ -58,7 +58,7 @@ export default function ProfilePage() {
                         </div>
                         <h2 className="text-2xl font-black mb-4">Profile Unavailable</h2>
                         <p className="text-muted-foreground mb-8">
-                            We couldn't load this profile. It may not exist or there might be a connection issue.
+                            We couldn&apos;t load this profile. It may not exist or there might be a connection issue.
                         </p>
                         <Link
                             href="/talent"
