@@ -27,7 +27,7 @@ export default function VerificationPage() {
     const router = useRouter();
 
     const handleVerify = async () => {
-        if (aadhaarNumber.length !== 12) {
+        if (aadhaarNumber.replace(/\s/g, '').length !== 12) {
             toast.error("Please enter a valid 12-digit Aadhaar number");
             return;
         }
@@ -143,11 +143,15 @@ export default function VerificationPage() {
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 ml-1">Aadhaar Card Number</label>
                                         <input
                                             type="text"
-                                            maxLength={12}
+                                            maxLength={14}
                                             placeholder="XXXX XXXX XXXX"
                                             className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl px-6 text-2xl font-black tracking-widest outline-none focus:ring-2 focus:ring-primary/50 transition-all font-heading"
                                             value={aadhaarNumber}
-                                            onChange={(e) => setAadhaarNumber(e.target.value.replace(/\D/g, ''))}
+                                            onChange={(e) => {
+                                                const raw = e.target.value.replace(/\D/g, '');
+                                                const formatted = raw.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
+                                                if (raw.length <= 12) setAadhaarNumber(formatted);
+                                            }}
                                         />
                                     </div>
 
