@@ -141,7 +141,7 @@ export default function HomePage() {
                         </p>
                         <Link
                             href="/signup"
-                            className="inline-flex h-16 px-10 rounded-2xl bg-white text-background font-black uppercase tracking-wider text-sm items-center gap-2 shadow-2xl hover:scale-105 transition-all"
+                            className="inline-flex h-16 px-10 rounded-2xl bg-white text-black font-black uppercase tracking-wider text-sm items-center gap-2 shadow-2xl hover:scale-105 transition-all"
                         >
                             Create Account <CheckCircle2 className="h-5 w-5" />
                         </Link>
