@@ -8,45 +8,56 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ShieldCheck, Mail, Lock, User, Loader2, ArrowRight, CheckCircle2, Briefcase, Building } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { setCookie } from "cookies-next";
+
+import { signupSchema, type SignupInput } from "@/lib/validations/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 export default function SignupPage() {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-        name: "",
-        role: "provider" as "provider" | "client",
+
+    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<SignupInput>({
+        resolver: zodResolver(signupSchema),
+        defaultValues: {
+            role: 'provider'
+        }
     });
 
+    const role = watch('role');
     const router = useRouter();
 
-    const handleSignup = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const nextStep = async () => {
+        // Only validate the fields relevant to the current step (none in step 1 yet, but role is pre-selected)
+        setStep(2);
+    };
+
+    const handleSignup = async (data: SignupInput) => {
         setLoading(true);
 
         try {
-            const { data, error } = await supabase.auth.signUp({
-                email: formData.email,
-                password: formData.password,
+            const { data: authData, error: signUpError } = await supabase.auth.signUp({
+                email: data.email,
+                password: data.password,
                 options: {
                     data: {
-                        full_name: formData.name,
-                        role: formData.role,
+                        full_name: data.name,
+                        role: data.role,
                     },
                 },
             });
 
-            if (error) throw error;
+            if (signUpError) throw signUpError;
 
-            if (data.user) {
+            if (authData.user) {
                 const { error: profileError } = await supabase
                     .from('profiles')
                     .insert({
-                        id: data.user.id,
-                        name: formData.name,
-                        title: formData.role === 'provider' ? 'Service Provider' : 'Professional Client',
-                        role: formData.role,
+                        id: authData.user.id,
+                        name: data.name,
+                        title: data.role === 'provider' ? 'Service Provider' : 'Professional Client',
+                        role: data.role,
                         skills: [],
                         xp: 0,
                         rating: 0,
@@ -54,11 +65,17 @@ export default function SignupPage() {
                         balance: 0,
                     });
 
-                if (profileError) console.error("Profile creation error:", profileError);
+                if (profileError) {
+                    console.error("Profile creation error:", profileError);
+                    // Even if profile fails, user is created in Auth. We should notify them.
+                    toast.warning("Account created, but profile setup failed. Please contact support.");
+                } else {
+                    setCookie('user-role', data.role, { maxAge: 60 * 60 * 24 * 7 }); // 7 days
+                    toast.success("Account created! Please check your email for verification.");
+                }
             }
 
-            toast.success("Account created! Please check your email for verification.");
-            router.push("/login");
+            router.push("/login?signup_success=true");
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to create account";
             toast.error(message);
@@ -91,7 +108,7 @@ export default function SignupPage() {
                 </div>
 
                 <div className="glass-card rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative border border-white/10">
-                    <form onSubmit={handleSignup} className="space-y-8">
+                    <form onSubmit={handleSubmit(handleSignup)} className="space-y-8">
                         <AnimatePresence mode="wait">
                             {step === 1 ? (
                                 <motion.div
@@ -106,40 +123,40 @@ export default function SignupPage() {
                                         <div className="grid grid-cols-2 gap-4">
                                             <button
                                                 type="button"
-                                                onClick={() => setFormData({ ...formData, role: 'provider' })}
+                                                onClick={() => setValue('role', 'provider')}
                                                 className={cn(
                                                     "p-6 rounded-3xl border text-left transition-all duration-300 group relative overflow-hidden",
-                                                    formData.role === 'provider'
+                                                    role === 'provider'
                                                         ? "border-primary bg-primary/10 shadow-lg shadow-primary/10 ring-1 ring-primary/50"
                                                         : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20"
                                                 )}
                                             >
-                                                {formData.role === 'provider' && (
+                                                {role === 'provider' && (
                                                     <motion.div layoutId="role-check" className="absolute top-4 right-4 text-primary">
                                                         <CheckCircle2 className="h-5 w-5" />
                                                     </motion.div>
                                                 )}
-                                                <Briefcase className={cn("h-8 w-8 mb-4 transition-colors duration-300", formData.role === 'provider' ? "text-primary" : "text-zinc-500 group-hover:text-zinc-300")} />
-                                                <div className={cn("font-black text-sm uppercase tracking-tight mb-2 transition-colors", formData.role === 'provider' ? "text-white" : "text-zinc-400 group-hover:text-white")}>Freelancer</div>
+                                                <Briefcase className={cn("h-8 w-8 mb-4 transition-colors duration-300", role === 'provider' ? "text-primary" : "text-zinc-500 group-hover:text-zinc-300")} />
+                                                <div className={cn("font-black text-sm uppercase tracking-tight mb-2 transition-colors", role === 'provider' ? "text-white" : "text-zinc-400 group-hover:text-white")}>Freelancer</div>
                                                 <div className="text-[11px] text-zinc-500 font-medium leading-relaxed">Find premium gigs and grow your XP.</div>
                                             </button>
                                             <button
                                                 type="button"
-                                                onClick={() => setFormData({ ...formData, role: 'client' })}
+                                                onClick={() => setValue('role', 'client')}
                                                 className={cn(
                                                     "p-6 rounded-3xl border text-left transition-all duration-300 group relative overflow-hidden",
-                                                    formData.role === 'client'
+                                                    role === 'client'
                                                         ? "border-accent bg-accent/10 shadow-lg shadow-accent/10 ring-1 ring-accent/50"
                                                         : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20"
                                                 )}
                                             >
-                                                {formData.role === 'client' && (
+                                                {role === 'client' && (
                                                     <motion.div layoutId="role-check" className="absolute top-4 right-4 text-accent">
                                                         <CheckCircle2 className="h-5 w-5" />
                                                     </motion.div>
                                                 )}
-                                                <Building className={cn("h-8 w-8 mb-4 transition-colors duration-300", formData.role === 'client' ? "text-accent" : "text-zinc-500 group-hover:text-zinc-300")} />
-                                                <div className={cn("font-black text-sm uppercase tracking-tight mb-2 transition-colors", formData.role === 'client' ? "text-white" : "text-zinc-400 group-hover:text-white")}>Business</div>
+                                                <Building className={cn("h-8 w-8 mb-4 transition-colors duration-300", role === 'client' ? "text-accent" : "text-zinc-500 group-hover:text-zinc-300")} />
+                                                <div className={cn("font-black text-sm uppercase tracking-tight mb-2 transition-colors", role === 'client' ? "text-white" : "text-zinc-400 group-hover:text-white")}>Business</div>
                                                 <div className="text-[11px] text-zinc-500 font-medium leading-relaxed">Hire verified talent with secure escrow.</div>
                                             </button>
                                         </div>
@@ -147,7 +164,7 @@ export default function SignupPage() {
 
                                     <button
                                         type="button"
-                                        onClick={() => setStep(2)}
+                                        onClick={nextStep}
                                         className="w-full h-14 rounded-2xl bg-white text-background font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl hover:shadow-2xl hover:shadow-white/10"
                                     >
                                         Continue <ArrowRight className="h-5 w-5" />
@@ -167,13 +184,15 @@ export default function SignupPage() {
                                             <User className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                                             <input
                                                 type="text"
-                                                required
+                                                {...register("name")}
                                                 placeholder="John Doe"
-                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 focus:ring-2 focus:ring-primary/50 outline-none transition-all font-medium"
-                                                value={formData.name}
-                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                className={cn(
+                                                    "w-full h-14 bg-white/5 border rounded-2xl pl-14 pr-6 focus:ring-2 outline-none transition-all font-medium",
+                                                    errors.name ? "border-red-500/50 focus:ring-red-500/20" : "border-white/10 focus:ring-primary/50"
+                                                )}
                                             />
                                         </div>
+                                        {errors.name && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.name.message}</p>}
                                     </div>
 
                                     <div className="space-y-2">
@@ -182,13 +201,15 @@ export default function SignupPage() {
                                             <Mail className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                                             <input
                                                 type="email"
-                                                required
+                                                {...register("email")}
                                                 placeholder="john@example.com"
-                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 focus:ring-2 focus:ring-primary/50 outline-none transition-all font-medium"
-                                                value={formData.email}
-                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                className={cn(
+                                                    "w-full h-14 bg-white/5 border rounded-2xl pl-14 pr-6 focus:ring-2 outline-none transition-all font-medium",
+                                                    errors.email ? "border-red-500/50 focus:ring-red-500/20" : "border-white/10 focus:ring-primary/50"
+                                                )}
                                             />
                                         </div>
+                                        {errors.email && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.email.message}</p>}
                                     </div>
 
                                     <div className="space-y-2">
@@ -197,13 +218,15 @@ export default function SignupPage() {
                                             <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                                             <input
                                                 type="password"
-                                                required
+                                                {...register("password")}
                                                 placeholder="••••••••"
-                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 focus:ring-2 focus:ring-primary/50 outline-none transition-all font-medium"
-                                                value={formData.password}
-                                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                                className={cn(
+                                                    "w-full h-14 bg-white/5 border rounded-2xl pl-14 pr-6 focus:ring-2 outline-none transition-all font-medium",
+                                                    errors.password ? "border-red-500/50 focus:ring-red-500/20" : "border-white/10 focus:ring-primary/50"
+                                                )}
                                             />
                                         </div>
+                                        {errors.password && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.password.message}</p>}
                                     </div>
 
                                     <div className="flex gap-4">

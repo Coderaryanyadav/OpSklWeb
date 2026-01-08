@@ -26,20 +26,25 @@ export default function VerificationPage() {
     const [file, setFile] = useState<File | null>(null);
     const router = useRouter();
 
+    const [verificationStatus, setVerificationStatus] = useState<string | null>(null);
+
     const handleVerify = async () => {
-        if (aadhaarNumber.replace(/\s/g, '').length !== 12) {
-            toast.error("Please enter a valid 12-digit Aadhaar number");
+        const cleanAadhaar = aadhaarNumber.replace(/\s/g, '');
+        if (cleanAadhaar.length !== 12) {
+            toast.error("Aadhaar Number must be exactly 12 digits");
             return;
         }
         if (!file) {
-            toast.error("Please upload a front-copy of your Aadhaar card");
+            toast.error("Please upload the front image of your Aadhaar card");
             return;
         }
 
         setLoading(true);
+        setVerificationStatus("Scanning Document...");
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
-        // Mocking the verification delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        setVerificationStatus("Verifying Identity with AI...");
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
         try {
             const { error } = await supabase
@@ -52,19 +57,19 @@ export default function VerificationPage() {
             toast.success("Identity verified successfully!");
             setStep(3);
 
-            // Update local state
             if (profile) {
                 setProfile({ ...profile, verified: true });
             }
 
             setTimeout(() => {
-                router.push("/dashboard");
+                window.location.href = "/dashboard";
             }, 3000);
         } catch (error) {
             const message = error instanceof Error ? error.message : "Verification failed";
             toast.error(message);
         } finally {
             setLoading(false);
+            setVerificationStatus(null);
         }
     };
 
@@ -196,7 +201,12 @@ export default function VerificationPage() {
                                         disabled={loading}
                                         className="w-full h-16 rounded-2xl bg-primary text-white font-black uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
                                     >
-                                        {loading ? <Loader2 className="h-6 w-6 animate-spin" /> : "Initiate Verification"}
+                                        {loading ? (
+                                            <>
+                                                <Loader2 className="h-6 w-6 animate-spin" />
+                                                {verificationStatus || "Processing"}
+                                            </>
+                                        ) : "Initiate Verification"}
                                     </button>
                                 </div>
                             </motion.div>

@@ -26,27 +26,36 @@ export async function middleware(request: NextRequest) {
 
     // Route Protection: Check authentication for protected routes
     const protectedRoutes = ['/dashboard', '/wallet', '/messages', '/post-gig', '/verify', '/profile'];
+    const clientOnlyRoutes = ['/post-gig'];
     const authRoutes = ['/login', '/signup'];
     const pathname = request.nextUrl.pathname;
 
-    // Check if current route is protected
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
     const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
+    const isClientOnlyRoute = clientOnlyRoutes.some(route => pathname.startsWith(route));
 
-    // Get auth token from cookie
+    // Get auth token and role from cookies
     const token = request.cookies.get('sb-access-token')?.value ||
         request.cookies.get('sb-localhost-auth-token')?.value;
+    const userRole = request.cookies.get('user-role')?.value;
 
-    // If accessing protected route without auth, redirect to login
+    // 1. Unauthenticated user accessing protected route
     if (isProtectedRoute && !token) {
         const loginUrl = new URL('/login', request.url);
         loginUrl.searchParams.set('redirect', pathname);
         return NextResponse.redirect(loginUrl);
     }
 
-    // If accessing auth routes while logged in, redirect to dashboard
+    // 2. Authenticated user accessing auth routes
     if (isAuthRoute && token) {
         return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+
+    // 3. Role-based protection: Client-only routes
+    if (isClientOnlyRoute && userRole === 'provider') {
+        const errorUrl = new URL('/dashboard', request.url);
+        errorUrl.searchParams.set('error', 'unauthorized_role');
+        return NextResponse.redirect(errorUrl);
     }
 
     return response;

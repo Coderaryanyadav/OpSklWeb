@@ -6,34 +6,61 @@ import { supabase } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { ShieldCheck, Mail, Lock, Loader2, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { setCookie } from "cookies-next";
+
+
+import { loginSchema, type LoginInput } from "@/lib/validations/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 export default function LoginPage() {
     const [loading, setLoading] = useState(false);
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
+    const { register, handleSubmit, formState: { errors } } = useForm<LoginInput>({
+        resolver: zodResolver(loginSchema)
     });
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleLogin = async (data: LoginInput) => {
         setLoading(true);
 
         try {
-            const { error } = await supabase.auth.signInWithPassword({
-                email: formData.email,
-                password: formData.password,
+            const { error: signInError } = await supabase.auth.signInWithPassword({
+                email: data.email,
+                password: data.password,
             });
 
-            if (error) throw error;
+            if (signInError) throw signInError;
+
+            // Fix Logic Error #2: Confirm session exists
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) throw new Error("Session verification failed");
+
+            // Fetch profile to get role for cookie
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+
+            if (profile) {
+                setCookie('user-role', profile.role, { maxAge: 60 * 60 * 24 * 7 }); // 7 days
+            }
 
             toast.success("Welcome back!");
 
-            // Get redirect parameter from URL or default to dashboard
+            // Fix Logic Error #1: Redirect Loop Risk
             const params = new URLSearchParams(window.location.search);
-            const redirectTo = params.get('redirect') || '/dashboard';
+            let redirectTo = params.get('redirect') || '/dashboard';
 
-            // Use window.location for immediate redirect
-            window.location.href = redirectTo;
+            // Normalize redirect path to prevent loop and external redirects
+            if (redirectTo === window.location.pathname || !redirectTo.startsWith('/')) {
+                redirectTo = '/dashboard';
+            }
+
+            // Small delay to ensure state and cookies are settled
+            setTimeout(() => {
+                window.location.href = redirectTo;
+            }, 100);
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "Failed to log in";
             toast.error(message);
@@ -66,20 +93,22 @@ export default function LoginPage() {
                 </div>
 
                 <div className="rounded-[2.5rem] border border-white/10 bg-white/[0.02] backdrop-blur-3xl p-8 md:p-12 shadow-2xl">
-                    <form onSubmit={handleLogin} className="space-y-6">
+                    <form onSubmit={handleSubmit(handleLogin)} className="space-y-6">
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Email</label>
                             <div className="relative group">
                                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                                 <input
                                     type="email"
-                                    required
+                                    {...register("email")}
                                     placeholder="john@example.com"
-                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 focus:ring-2 focus:ring-primary/50 outline-none transition-all font-medium"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    className={cn(
+                                        "w-full h-14 bg-white/5 border rounded-2xl pl-14 pr-6 focus:ring-2 outline-none transition-all font-medium",
+                                        errors.email ? "border-red-500/50 focus:ring-red-500/20" : "border-white/10 focus:ring-primary/50"
+                                    )}
                                 />
                             </div>
+                            {errors.email && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.email.message}</p>}
                         </div>
 
                         <div className="space-y-2">
@@ -88,13 +117,15 @@ export default function LoginPage() {
                                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                                 <input
                                     type="password"
-                                    required
+                                    {...register("password")}
                                     placeholder="••••••••"
-                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 focus:ring-2 focus:ring-primary/50 outline-none transition-all font-medium"
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    className={cn(
+                                        "w-full h-14 bg-white/5 border rounded-2xl pl-14 pr-6 focus:ring-2 outline-none transition-all font-medium",
+                                        errors.password ? "border-red-500/50 focus:ring-red-500/20" : "border-white/10 focus:ring-primary/50"
+                                    )}
                                 />
                             </div>
+                            {errors.password && <p className="text-[10px] text-red-500 font-bold ml-1">{errors.password.message}</p>}
                         </div>
 
                         <button

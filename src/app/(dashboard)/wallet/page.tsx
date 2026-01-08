@@ -29,8 +29,17 @@ export default function WalletPage() {
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
     const handleAddMoney = () => {
-        if (!amount || parseInt(amount) < 100) {
+        const numAmount = parseInt(amount);
+        if (!amount || isNaN(numAmount)) {
+            toast.error("Please enter a valid amount");
+            return;
+        }
+        if (numAmount < 100) {
             toast.error("Minimum deposit is ₹100");
+            return;
+        }
+        if (numAmount > 100000) {
+            toast.error("Maximum single deposit is ₹1,00,000 for security");
             return;
         }
         setIsPaymentModalOpen(true);
