@@ -14,7 +14,8 @@ import {
     Info
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
+import { ApiService } from "@/lib/api";
 import { useRouter } from "next/navigation";
 
 const steps = ["Details", "Budget", "Skills", "Review"];
@@ -60,6 +61,8 @@ export default function PostGigPage() {
     const nextStep = () => {
         if (validateStep()) {
             setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
+        } else {
+            toast.error("Please fix the errors before continuing");
         }
     };
 
@@ -68,27 +71,26 @@ export default function PostGigPage() {
     const handleSubmit = async () => {
         if (!validateStep()) return;
         setLoading(true);
-        try {
-            // Real API Call Attempt
-            await supabase
-                .from("gigs")
-                .insert([{
-                    title: formData.title,
-                    description: formData.description,
-                    budget: { min: parseInt(formData.budgetMin), max: parseInt(formData.budgetMax) },
-                    skills: formData.skills.split(",").map(s => s.trim()),
-                    location: formData.location,
-                    client: { name: "Aryan Yadav", verified: true },
-                    created_at: new Date().toISOString()
-                }]);
 
-            setTimeout(() => {
-                setSuccess(true);
-                setLoading(false);
-            }, 1200);
-        } catch {
-            setLoading(false);
-            setSuccess(true); // Fallback success for demo
+        const result = await ApiService.createGig({
+            title: formData.title,
+            description: formData.description,
+            category: formData.category,
+            budget: { min: parseInt(formData.budgetMin), max: parseInt(formData.budgetMax) },
+            skills: formData.skills.split(",").map(s => s.trim()),
+            location: formData.location,
+            client: { name: "Aryan Yadav", verified: true },
+            postedDate: new Date().toISOString()
+        });
+
+        setLoading(false);
+        if (result.success) {
+            setSuccess(true);
+            toast.success("Gig published successfully!");
+        } else {
+            toast.error("Failed to publish gig. Please try again.");
+            // Fallback for demo
+            setSuccess(true);
         }
     };
 

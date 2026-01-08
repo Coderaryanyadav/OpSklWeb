@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { SkipToContent } from "@/components/layout/skip-to-content";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -65,6 +66,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <Toaster position="top-center" expand={true} richColors closeButton />
       </body>
     </html>
   );

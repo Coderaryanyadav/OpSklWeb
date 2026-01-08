@@ -11,6 +11,7 @@ import {
   Lock,
   Search
 } from "lucide-react";
+import { GlowingBorder } from "@/components/ui/glowing-border";
 
 export default function Home() {
   const container = {
@@ -120,30 +121,31 @@ export default function Home() {
               {
                 title: "Aadhaar Verification",
                 icon: ShieldCheck,
-                desc: "Every service provider is KYC-verified using Aadhaar, ensuring you work with real, accountable professionals."
+                desc: "Every service provider is KYC-verified using Aadhaar, ensuring you work with real, accountable professionals.",
+                color: "rgba(99, 102, 241, 0.4)"
               },
               {
                 title: "Smart Escrow",
                 icon: Lock,
-                desc: "Funds are held securely in escrow and only released when the work meets your satisfaction."
+                desc: "Funds are held securely in escrow and only released when the work meets your satisfaction.",
+                color: "rgba(236, 72, 153, 0.4)"
               },
               {
                 title: "Skill Certification",
                 icon: CheckCircle2,
-                desc: "Our AI-driven skill tests ensure talent quality before they can apply for premium gigs."
+                desc: "Our AI-driven skill tests ensure talent quality before they can apply for premium gigs.",
+                color: "rgba(16, 185, 129, 0.4)"
               }
             ].map((feature, idx) => (
-              <motion.div
-                key={idx}
-                whileHover={{ y: -5 }}
-                className="p-8 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm"
-              >
-                <div className="h-12 w-12 rounded-xl bg-primary/20 flex items-center justify-center mb-6 text-primary">
-                  <feature.icon className="h-6 w-6" />
+              <GlowingBorder key={idx} glowColor={feature.color}>
+                <div className="p-8 h-full">
+                  <div className="h-12 w-12 rounded-xl bg-primary/20 flex items-center justify-center mb-6 text-primary">
+                    <feature.icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{feature.desc}</p>
                 </div>
-                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{feature.desc}</p>
-              </motion.div>
+              </GlowingBorder>
             ))}
           </div>
         </div>

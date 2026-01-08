@@ -1,116 +1,139 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Search, Loader2, Star, ShieldCheck, MapPin } from "lucide-react";
+import React, { useEffect, useState, useMemo } from "react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+import { TalentCard } from "@/components/ui/talent-card";
+import { ApiService } from "@/lib/api";
 import { Profile } from "@/types";
-import { personSampleData } from "@/lib/sample-data";
+import { motion, AnimatePresence } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const sampleTalent: Profile[] = personSampleData;
+function TalentSkeleton() {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, i) => (
+                <div key={i} className="rounded-3xl border border-white/10 bg-white/[0.02] p-8 space-y-6">
+                    <div className="flex items-center gap-5">
+                        <Skeleton className="h-16 w-16 rounded-2xl" />
+                        <div className="space-y-2">
+                            <Skeleton className="h-6 w-32" />
+                            <Skeleton className="h-4 w-24" />
+                        </div>
+                    </div>
+                    <Skeleton className="h-10 w-40 rounded-full" />
+                    <div className="flex gap-2">
+                        <Skeleton className="h-6 w-16" />
+                        <Skeleton className="h-6 w-16" />
+                        <Skeleton className="h-6 w-16" />
+                    </div>
+                    <div className="pt-8 border-t border-white/5 flex justify-between items-center">
+                        <div className="space-y-1">
+                            <Skeleton className="h-3 w-16" />
+                            <Skeleton className="h-6 w-24" />
+                        </div>
+                        <Skeleton className="h-12 w-32 rounded-2xl" />
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
 
 export default function TalentPage() {
     const [talent, setTalent] = useState<Profile[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
+        let isMounted = true;
         async function fetchTalent() {
-            try {
-                const { data, error } = await supabase.from("profiles").select("*");
-                if (error || !data || data.length === 0) {
-                    setTalent(sampleTalent);
-                } else {
-                    setTalent(data);
-                }
-            } catch {
-                setTalent(sampleTalent);
-            } finally {
+            setLoading(true);
+            const data = await ApiService.getProfiles();
+            if (isMounted) {
+                setTalent(data);
                 setLoading(false);
             }
         }
         fetchTalent();
+        return () => { isMounted = false; };
     }, []);
 
-    return (
-        <div className="container mx-auto px-4 py-12 md:px-6">
-            <div className="mb-12">
-                <h1 className="text-4xl font-extrabold tracking-tight mb-2">Find Verified Talent</h1>
-                <p className="text-muted-foreground">Work with the top 1% of Indian freelancers, verified by Aadhaar.</p>
-            </div>
+    const filteredTalent = useMemo(() => {
+        const query = searchQuery.toLowerCase().trim();
+        if (!query) return talent;
+        return talent.filter(p =>
+            p.name.toLowerCase().includes(query) ||
+            p.title.toLowerCase().includes(query) ||
+            p.skills.some(s => s.toLowerCase().includes(query))
+        );
+    }, [talent, searchQuery]);
 
-            <div className="flex gap-4 mb-8">
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <input
-                        type="text"
-                        placeholder="Search by skill or title..."
-                        className="h-12 w-full rounded-xl bg-white/[0.03] border border-white/10 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    />
+    return (
+        <div className="container mx-auto px-4 py-16 md:px-6">
+            <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+                <div className="max-w-2xl">
+                    <motion.h1
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="text-5xl font-black tracking-tighter mb-4"
+                    >
+                        Find World-Class Talent
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-muted-foreground text-xl"
+                    >
+                        The top 1% of Indian professionals, verified by Aadhaar and vetted by AI.
+                    </motion.p>
                 </div>
-                <Button className="h-12 border-white/10" variant="outline">Filters</Button>
-            </div>
+                <div className="flex items-center gap-3 w-full md:w-auto">
+                    <div className="relative group flex-grow md:w-80">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <input
+                            type="text"
+                            placeholder="e.g. Next.js Developer, UI/UX..."
+                            className="h-14 w-full rounded-2xl bg-white/[0.03] border border-white/10 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                    <Button variant="outline" size="icon" className="h-14 w-14 rounded-2xl border-white/10 hover:bg-white/5 transition-all">
+                        <SlidersHorizontal className="h-5 w-5" />
+                    </Button>
+                </div>
+            </header>
 
             {loading ? (
-                <div className="flex h-64 items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
+                <TalentSkeleton />
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {talent.map((person, idx) => (
+                <AnimatePresence mode="popLayout">
+                    {filteredTalent.length > 0 ? (
                         <motion.div
-                            key={person.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: idx * 0.1 }}
-                            className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 hover:bg-white/[0.04] transition-all group"
+                            layout
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                         >
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="h-16 w-16 rounded-2xl bg-primary/20 flex items-center justify-center text-2xl font-bold text-primary">
-                                    {person.name.charAt(0)}
-                                </div>
-                                <div>
-                                    <div className="flex items-center gap-1.5 font-bold text-lg">
-                                        {person.name}
-                                        {person.verified && <ShieldCheck className="h-4 w-4 text-primary" />}
-                                    </div>
-                                    <div className="text-sm text-muted-foreground">{person.title}</div>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-4 text-sm mb-6">
-                                <div className="flex items-center gap-1">
-                                    <Star className="h-4 w-4 text-primary fill-primary" />
-                                    <span className="font-bold">{person.rating}</span>
-                                    <span className="text-muted-foreground">({person.reviews})</span>
-                                </div>
-                                <div className="flex items-center gap-1 text-muted-foreground">
-                                    <MapPin className="h-3 w-3" />
-                                    {person.location}
-                                </div>
-                            </div>
-
-                            <div className="flex flex-wrap gap-2 mb-8">
-                                {person.skills.map((skill: string) => (
-                                    <span key={skill} className="px-2 py-1 rounded bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                                        {skill}
-                                    </span>
-                                ))}
-                            </div>
-
-                            <div className="flex items-center justify-between pt-6 border-t border-white/5">
-                                <div>
-                                    <span className="text-lg font-bold">₹{person.rate}</span>
-                                    <span className="text-xs text-muted-foreground">/hr</span>
-                                </div>
-                                <Button size="sm" variant="outline" asChild className="group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary">
-                                    <Link href={`/profile/${person.id}`}>View Profile</Link>
-                                </Button>
-                            </div>
+                            {filteredTalent.map((person, idx) => (
+                                <TalentCard key={person.id} person={person} index={idx} />
+                            ))}
                         </motion.div>
-                    ))}
-                </div>
+                    ) : (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="flex flex-col items-center justify-center py-32 text-center"
+                        >
+                            <div className="h-20 w-20 rounded-3xl bg-white/5 flex items-center justify-center mb-6">
+                                <Search className="h-10 w-10 text-muted-foreground" />
+                            </div>
+                            <h3 className="text-2xl font-black mb-2">No professionals found</h3>
+                            <p className="text-muted-foreground max-w-sm mb-8">We couldn&apos;t find anyone matching &quot;{searchQuery}&quot;. Try broadening your search.</p>
+                            <Button variant="ghost" className="font-bold uppercase tracking-widest" onClick={() => setSearchQuery("")}>Clear Search</Button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             )}
         </div>
     );
