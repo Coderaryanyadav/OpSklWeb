@@ -35,7 +35,7 @@ export default function HomePage() {
                             transition={{ delay: 0.1 }}
                             className="text-5xl md:text-7xl lg:text-8xl font-black font-heading tracking-tighter mb-8 leading-[1.1]"
                         >
-                            Verified Talent.<br />
+                            Elite Talent.<br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary to-accent drop-shadow-sm">Premium Opportunities.</span>
                         </motion.h1>
 
@@ -78,7 +78,7 @@ export default function HomePage() {
                         {[
                             {
                                 icon: ShieldCheck,
-                                title: "Aadhaar Verified",
+                                title: "Government Verified",
                                 description: "Every member verified through government ID. No fake profiles, no catfishing.",
                             },
                             {
