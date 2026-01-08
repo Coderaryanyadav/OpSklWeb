@@ -18,6 +18,7 @@ const RazorpayModal = dynamic(() => import("@/components/wallet/razorpay-modal")
     loading: () => null
 });
 import { supabase } from "@/lib/supabase/client";
+import { TransactionList } from "@/components/wallet/transaction-list";
 
 export default function WalletPage() {
     const { profile, setProfile } = useAuthStore();
@@ -115,9 +116,7 @@ export default function WalletPage() {
                                 <div className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Last 30 Days</div>
                             </div>
 
-                            <div className="p-12 text-center border-2 border-dashed border-white/5 rounded-[2rem]">
-                                <p className="text-zinc-500 font-bold italic">No transactions yet. Start by adding funds or completing a gig.</p>
-                            </div>
+                            <TransactionList userId={profile?.id} />
                         </section>
                     </div>
 
