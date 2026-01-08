@@ -5,18 +5,18 @@ import { Navbar } from "@/components/layout/navbar";
 import { useAuthStore } from "@/stores/auth-store";
 import {
     IndianRupee,
-    ArrowUpRight,
-    ArrowDownLeft,
     Plus,
     History,
     ShieldCheck,
-    Zap,
-    CheckCircle2,
-    AlertCircle,
-    Clock
+    Zap
 } from "lucide-react";
 import { toast } from "sonner";
-import { RazorpayModal } from "@/components/wallet/razorpay-modal";
+import dynamic from "next/dynamic";
+
+const RazorpayModal = dynamic(() => import("@/components/wallet/razorpay-modal").then((mod) => mod.RazorpayModal), {
+    ssr: false,
+    loading: () => null
+});
 import { supabase } from "@/lib/supabase/client";
 
 export default function WalletPage() {
