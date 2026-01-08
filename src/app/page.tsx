@@ -7,8 +7,6 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
-  Globe,
-  Users,
   CheckCircle2,
   Lock,
   Search
@@ -48,7 +46,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary mb-8"
             >
               <Zap className="h-4 w-4" />
-              <span>India's #1 Secure Gig Platform</span>
+              <span>India&apos;s #1 Secure Gig Platform</span>
             </motion.div>
 
             <motion.h1

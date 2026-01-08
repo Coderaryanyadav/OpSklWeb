@@ -43,7 +43,7 @@ async function getProfile(id: string): Promise<Profile | null> {
             return sampleProfiles.find(p => p.id === id) || sampleProfiles[0];
         }
         return data;
-    } catch (err) {
+    } catch {
         return sampleProfiles[0];
     }
 }

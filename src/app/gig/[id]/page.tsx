@@ -40,7 +40,7 @@ async function getGig(id: string): Promise<Gig | null> {
             return samples.find(s => s.id === id) || null;
         }
         return data;
-    } catch (err) {
+    } catch {
         return samples.find(s => s.id === id) || null;
     }
 }

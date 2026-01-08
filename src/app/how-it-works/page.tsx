@@ -5,10 +5,8 @@ import { motion } from "framer-motion";
 import {
     UserPlus,
     Search,
-    MessageSquare,
     ShieldCheck,
     Wallet,
-    Star,
     CheckCircle2,
     Lock,
     ArrowRight
@@ -48,7 +46,7 @@ export default function HowItWorks() {
             <div className="text-center mb-20">
                 <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">How OpSkl Works</h1>
                 <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                    We've built India's most secure ecosystem for remote work, focused on trust, transparency, and timely payments.
+                    We&apos;ve built India&apos;s most secure ecosystem for remote work, focused on trust, transparency, and timely payments.
                 </p>
             </div>
 
@@ -119,7 +117,7 @@ export default function HowItWorks() {
                         <div className="aspect-video rounded-2xl bg-gradient-to-br from-primary/40 to-accent/40 flex items-center justify-center overflow-hidden">
                             <ShieldCheck className="h-48 w-48 text-white opacity-20" />
                             <div className="absolute inset-x-8 bottom-8 p-6 rounded-xl bg-background/80 backdrop-blur border border-white/10">
-                                <p className="text-sm font-medium">"OpSkl's verification process reduced our hiring time by 60% and eliminated payment disputes entirely."</p>
+                                <p className="text-sm font-medium">&quot;OpSkl&apos;s verification process reduced our hiring time by 60% and eliminated payment disputes entirely.&quot;</p>
                                 <p className="mt-2 text-xs text-muted-foreground text-right">— Rahul V., Product Lead at Zomato</p>
                             </div>
                         </div>

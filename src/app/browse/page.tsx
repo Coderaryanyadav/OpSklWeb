@@ -163,7 +163,7 @@ export default function BrowsePage() {
                                 </div>
                                 <h3 className="text-xl font-bold">No results found</h3>
                                 <p className="text-muted-foreground max-w-xs mx-auto mt-2">
-                                    Try adjusting your search query for "{searchQuery}".
+                                    Try adjusting your search query for &quot;{searchQuery}&quot;.
                                 </p>
                                 <Button variant="link" onClick={() => setSearchQuery("")} className="mt-4 text-primary">
                                     Clear search query

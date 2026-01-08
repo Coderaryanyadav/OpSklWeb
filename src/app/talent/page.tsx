@@ -6,45 +6,13 @@ import { Search, Loader2, Star, ShieldCheck, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { Profile } from "@/types";
+import { personSampleData } from "@/lib/sample-data";
 
-const sampleTalent = [
-    {
-        id: "1",
-        name: "Rahul Kumar",
-        title: "Senior Full-Stack Developer",
-        rating: 4.9,
-        reviews: 42,
-        location: "Bangalore",
-        verified: true,
-        skills: ["Next.js", "TypeScript", "Node.js"],
-        rate: 1200
-    },
-    {
-        id: "2",
-        name: "Aisha Verma",
-        title: "UI/UX Designer",
-        rating: 4.8,
-        reviews: 29,
-        location: "Remote",
-        verified: true,
-        skills: ["Figma", "Branding", "Webflow"],
-        rate: 950
-    },
-    {
-        id: "3",
-        name: "Vikram Singh",
-        title: "Python & Data Scientist",
-        rating: 5.0,
-        reviews: 12,
-        location: "Delhi",
-        verified: false,
-        skills: ["Python", "TensorFlow", "Pandas"],
-        rate: 1500
-    }
-];
+const sampleTalent: Profile[] = personSampleData;
 
 export default function TalentPage() {
-    const [talent, setTalent] = useState<any[]>([]);
+    const [talent, setTalent] = useState<Profile[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -56,7 +24,7 @@ export default function TalentPage() {
                 } else {
                     setTalent(data);
                 }
-            } catch (err) {
+            } catch {
                 setTalent(sampleTalent);
             } finally {
                 setLoading(false);

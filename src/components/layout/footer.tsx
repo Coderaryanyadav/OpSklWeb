@@ -42,7 +42,7 @@ export function Footer() {
                             <span className="text-2xl font-black tracking-tighter">OpSkl</span>
                         </Link>
                         <p className="mb-8 max-w-sm text-base text-muted-foreground leading-relaxed">
-                            India's first trust-first gig economy platform. We bridge the gap between premium clients and verified talent through secure Aadhaar-linked verification and smart escrow payments.
+                            India&apos;s first trust-first gig economy platform. We bridge the gap between premium clients and verified talent through secure Aadhaar-linked verification and smart escrow payments.
                         </p>
                         <div className="flex gap-4">
                             {socialLinks.map((social) => (

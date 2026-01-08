@@ -86,7 +86,7 @@ export default function PostGigPage() {
                 setSuccess(true);
                 setLoading(false);
             }, 1200);
-        } catch (err) {
+        } catch {
             setLoading(false);
             setSuccess(true); // Fallback success for demo
         }
@@ -104,7 +104,7 @@ export default function PostGigPage() {
                 </motion.div>
                 <h1 className="text-5xl font-black mb-6 tracking-tighter">Gig Published!</h1>
                 <p className="text-muted-foreground text-xl max-w-lg mx-auto mb-12 leading-relaxed">
-                    Your project is now being broadcasted to our verified talent pool. You'll receive high-quality proposals within minutes.
+                    Your project is now being broadcasted to our verified talent pool. You&apos;ll receive high-quality proposals within minutes.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                     <Button size="lg" variant="premium" className="h-16 px-10 text-lg font-bold" onClick={() => router.push("/browse")}>Go to Dashboard</Button>
@@ -118,7 +118,7 @@ export default function PostGigPage() {
         <div className="container mx-auto px-4 py-16 md:px-6 max-w-4xl">
             <div className="mb-16 text-center md:text-left">
                 <h1 className="text-5xl font-black tracking-tighter mb-6">Scale Your Project</h1>
-                <p className="text-muted-foreground text-lg mb-12">Connect with India's most verified and trusted professionals.</p>
+                <p className="text-muted-foreground text-lg mb-12">Connect with India&apos;s most verified and trusted professionals.</p>
 
                 {/* Modern Stepper */}
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:bg-white/[0.02] md:p-6 p-0 rounded-3xl md:border md:border-white/5">
@@ -284,7 +284,7 @@ export default function PostGigPage() {
                                     </div>
                                     <h3 className="text-3xl font-black mb-4 tracking-tighter">{formData.title || "Untitled Project"}</h3>
                                     <p className="text-lg text-muted-foreground line-clamp-4 leading-relaxed italic border-l-4 border-primary pl-6 mb-10">
-                                        "{formData.description || "No description provided."}"
+                                        &quot;{formData.description || "No description provided."}&quot;
                                     </p>
                                     <div className="grid grid-cols-2 gap-10">
                                         <div>

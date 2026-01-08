@@ -27,8 +27,11 @@ export function Navbar() {
 
     // Close mobile menu on path change
     useEffect(() => {
-        setIsOpen(false);
-    }, [pathname]);
+        if (isOpen) {
+            const timer = setTimeout(() => setIsOpen(false), 0);
+            return () => clearTimeout(timer);
+        }
+    }, [pathname, isOpen]);
 
     return (
         <nav
