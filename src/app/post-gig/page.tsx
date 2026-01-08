@@ -1,17 +1,29 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAuthStore } from "@/stores/auth-store";
 import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { Briefcase, DollarSign, MapPin, Tag, FileText, Loader2 } from "lucide-react";
+import { Briefcase, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function PostGigPage() {
-    const { user } = useAuthStore();
+    const { profile } = useAuthStore();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+
+    // CRITICAL: Only CLIENTS can post gigs (they need work done)
+    useEffect(() => {
+        if (profile && profile.role !== 'client') {
+            toast.error("Only clients can post gigs. Providers browse and apply for gigs.");
+            router.push('/gigs');
+        }
+    }, [profile, router]);
+
+    if (!profile || profile.role !== 'client') {
+        return null; // Redirecting...
+    }
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -43,7 +55,7 @@ export default function PostGigPage() {
     };
 
     const handleSubmit = async () => {
-        if (!user) {
+        if (!profile) {
             toast.error("You must be logged in to broadcast projects");
             router.push("/login");
             return;
@@ -61,7 +73,7 @@ export default function PostGigPage() {
                 budget_max: parseInt(formData.budgetMax),
                 skills: formData.skills.split(',').map(s => s.trim()).filter(Boolean),
                 location: formData.location,
-                client_id: user.id,
+                client_id: profile.id,
                 status: 'open'
             });
 
