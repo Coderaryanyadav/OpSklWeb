@@ -1,4 +1,3 @@
-import React from "react";
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
@@ -22,9 +21,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
     children,
-}: Readonly<{
+}: {
     children: React.ReactNode;
-}>) {
+}) {
     return (
         <html lang="en" className="dark">
             <body className={`${inter.variable} ${outfit.variable} font-sans antialiased`}>
