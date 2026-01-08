@@ -8,10 +8,13 @@ import { Loader2, ShieldCheck, Star, MapPin, Calendar } from "lucide-react";
 import { useParams } from "next/navigation";
 import type { Profile } from "@/types";
 import Image from "next/image";
+import Link from "next/link";
+import { useAuthStore } from "@/stores/auth-store";
 
 export default function ProfilePage() {
     const params = useParams();
     const profileId = params.id as string;
+    const { user } = useAuthStore();
 
     const { data: profile, isLoading } = useQuery({
         queryKey: ['profile', profileId],
@@ -60,7 +63,6 @@ export default function ProfilePage() {
                                         width={128}
                                         height={128}
                                         className="h-full w-full object-cover"
-                                        unoptimized
                                     />
                                 ) : (
                                     <span className="text-5xl font-black">{profile.name.charAt(0)}</span>
@@ -102,6 +104,15 @@ export default function ProfilePage() {
                                     </span>
                                 </div>
                             </div>
+
+                            {user?.id !== profile.id && (
+                                <Link
+                                    href={`/messages?partner=${profile.id}`}
+                                    className="mt-6 w-full h-12 rounded-2xl bg-primary text-white font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-primary/20"
+                                >
+                                    Message
+                                </Link>
+                            )}
                         </div>
                     </div>
 

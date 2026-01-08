@@ -33,10 +33,10 @@ export default function HomePage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="text-5xl md:text-7xl lg:text-8xl font-black font-heading tracking-tighter mb-8 leading-tight"
+                            className="text-5xl md:text-7xl lg:text-8xl font-black font-heading tracking-tighter mb-8 leading-[1.1]"
                         >
                             Verified Talent.<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-accent text-glow">Premium Opportunities.</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-primary to-accent drop-shadow-sm">Premium Opportunities.</span>
                         </motion.h1>
 
                         <motion.p
@@ -111,7 +111,7 @@ export default function HomePage() {
             </section>
 
             {/* Stats Section */}
-            <section className="py-20 border-t border-white/5">
+            <section className="py-20 relative">
                 <div className="container mx-auto px-4 md:px-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                         {[
