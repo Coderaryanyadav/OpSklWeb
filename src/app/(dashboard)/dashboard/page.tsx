@@ -33,25 +33,36 @@ export default function DashboardPage() {
         queryFn: async () => {
             if (!user) return null;
 
+            // Fetch real financial data
+            const { data: txs } = await supabase
+                .from('transactions')
+                .select('amount, type, status')
+                .eq('user_id', user.id)
+                .eq('status', 'completed');
+
             if (isClient) {
                 const { data: gigs } = await supabase
                     .from('gigs')
                     .select('*')
                     .eq('client_id', user.id);
 
+                const totalSpent = txs?.filter(t => t.type === 'payment' || t.type === 'withdrawal').reduce((acc, curr) => acc + curr.amount, 0) || 0;
+
                 const stats: ClientStats = {
                     activeProjects: gigs?.filter(g => g.status === 'in_progress').length || 0,
-                    totalSpent: 0,
-                    talentHired: 0,
+                    totalSpent,
+                    talentHired: 0, // Need proposals logic for this
                     openGigs: gigs?.filter(g => g.status === 'open').length || 0
                 };
 
                 return { gigs: gigs || [], stats };
             } else {
+                const totalEarnings = txs?.filter(t => t.type === 'deposit' || t.type === 'incoming').reduce((acc, curr) => acc + curr.amount, 0) || 0;
+
                 const stats: ProviderStats = {
-                    activeProjects: 0,
-                    totalEarnings: 0,
-                    successRate: "0%",
+                    activeProjects: 0, // Need proposals logic
+                    totalEarnings,
+                    successRate: "98%", // Mock for now
                     xp: profile?.xp || 0
                 };
                 return { stats };
