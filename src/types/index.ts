@@ -51,7 +51,7 @@ export type Transaction = {
     status: 'pending' | 'completed' | 'failed';
     gig_id?: number;
     created_at: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 };
 
 export type NavbarItem = {
