@@ -72,7 +72,7 @@ export function Navbar() {
                                     className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden hover:border-primary transition-colors"
                                 >
                                     {profile?.avatar ? (
-                                        <Image src={profile.avatar} alt={profile.name} width={40} height={40} className="h-full w-full object-cover" unoptimized />
+                                        <Image src={profile.avatar} alt={profile.name} width={40} height={40} className="h-full w-full object-cover" />
                                     ) : (
                                         <span className="text-sm font-black">{profile?.name.charAt(0) || "U"}</span>
                                     )}
