@@ -27,6 +27,16 @@ export default function VerificationPage() {
     const router = useRouter();
 
     const [verificationStatus, setVerificationStatus] = useState<string | null>(null);
+    const isMounted = React.useRef(true);
+    const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+    React.useEffect(() => {
+        isMounted.current = true;
+        return () => {
+            isMounted.current = false;
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        };
+    }, []);
 
     const handleVerify = async () => {
         const cleanAadhaar = aadhaarNumber.replace(/\s/g, '');
@@ -38,38 +48,48 @@ export default function VerificationPage() {
             toast.error("Please upload the front image of your Aadhaar card");
             return;
         }
+        if (!profile?.id) {
+            toast.error("User session not found. Please log in again.");
+            return;
+        }
 
         setLoading(true);
         setVerificationStatus("Scanning Document...");
         await new Promise(resolve => setTimeout(resolve, 1500));
+        if (!isMounted.current) return;
 
         setVerificationStatus("Verifying Identity with AI...");
         await new Promise(resolve => setTimeout(resolve, 1500));
+        if (!isMounted.current) return;
 
         try {
             const { error } = await supabase
                 .from('profiles')
                 .update({ verified: true })
-                .eq('id', profile?.id);
+                .eq('id', profile.id);
 
             if (error) throw error;
 
-            toast.success("Identity verified successfully!");
-            setStep(3);
-
-            if (profile) {
+            if (isMounted.current) {
+                toast.success("Identity verified successfully!");
+                setStep(3);
                 setProfile({ ...profile, verified: true });
+
+                timeoutRef.current = setTimeout(() => {
+                    if (isMounted.current) window.location.href = "/dashboard";
+                }, 3000);
             }
 
-            setTimeout(() => {
-                window.location.href = "/dashboard";
-            }, 3000);
         } catch (error) {
-            const message = error instanceof Error ? error.message : "Verification failed";
-            toast.error(message);
+            if (isMounted.current) {
+                const message = error instanceof Error ? error.message : "Verification failed";
+                toast.error(message);
+            }
         } finally {
-            setLoading(false);
-            setVerificationStatus(null);
+            if (isMounted.current) {
+                setLoading(false);
+                setVerificationStatus(null);
+            }
         }
     };
 

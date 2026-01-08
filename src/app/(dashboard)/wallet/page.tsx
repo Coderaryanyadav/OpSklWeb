@@ -45,7 +45,18 @@ export default function WalletPage() {
         setIsPaymentModalOpen(true);
     };
 
+    const isMounted = React.useRef(true);
+    React.useEffect(() => {
+        isMounted.current = true;
+        return () => { isMounted.current = false; };
+    }, []);
+
     const handlePaymentSuccess = async () => {
+        if (!profile?.id) {
+            toast.error("Session missing. Please re-login.");
+            return;
+        }
+
         setIsPaymentModalOpen(false);
         setLoading(true);
 
@@ -56,7 +67,7 @@ export default function WalletPage() {
             const { error: txError } = await supabase
                 .from('transactions')
                 .insert({
-                    user_id: profile?.id,
+                    user_id: profile.id,
                     type: 'deposit',
                     amount: numAmount,
                     status: 'completed'
@@ -64,24 +75,29 @@ export default function WalletPage() {
 
             if (txError) throw txError;
 
-            // 2. The database trigger handles the balance, but we update the UI optimistically
-            if (profile) {
+            // 2. The database trigger handles the balance, update UI if still mounted
+            if (isMounted.current) {
                 setProfile({ ...profile, balance: (Number(profile.balance) || 0) + numAmount });
+
+                // 3. Invalidate queries
+                await queryClient.invalidateQueries({ queryKey: ['transactions', profile.id] });
+                await queryClient.invalidateQueries({ queryKey: ['dashboard_stats'] });
+
+                toast.success(`₹${amount} added successfully to your secure vault`);
+                setAmount("");
             }
-
-            // 3. Invalidate queries to refresh transaction list
-            await queryClient.invalidateQueries({ queryKey: ['transactions'] });
-            await queryClient.invalidateQueries({ queryKey: ['dashboard_stats'] });
-
-            toast.success(`₹${amount} added successfully to your secure vault`);
-            setAmount("");
         } catch (error) {
-            const message = error instanceof Error ? error.message : "Banking sync failed";
-            toast.error(message);
+            if (isMounted.current) {
+                const message = error instanceof Error ? error.message : "Banking sync failed";
+                toast.error(message);
+            }
         } finally {
-            setLoading(false);
+            if (isMounted.current) {
+                setLoading(false);
+            }
         }
     };
+
 
     return (
         <div className="min-h-screen pt-24 pb-24">

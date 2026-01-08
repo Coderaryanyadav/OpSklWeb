@@ -21,16 +21,26 @@ interface RazorpayModalProps {
 
 export function RazorpayModal({ isOpen, onClose, onSuccess, amount }: RazorpayModalProps) {
     const [status, setStatus] = useState<'selecting' | 'processing' | 'success'>('selecting');
+    const timeouts = React.useRef<NodeJS.Timeout[]>([]);
+
+    React.useEffect(() => {
+        return () => {
+            timeouts.current.forEach(clearTimeout);
+        };
+    }, []);
 
     const handlePayment = () => {
         setStatus('processing');
-        setTimeout(() => {
+        const t1 = setTimeout(() => {
             setStatus('success');
-            setTimeout(() => {
+            const t2 = setTimeout(() => {
                 onSuccess();
             }, 2000);
+            timeouts.current.push(t2);
         }, 2000);
+        timeouts.current.push(t1);
     };
+
 
     return (
         <AnimatePresence>

@@ -16,9 +16,12 @@ export function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const handleSignOut = async () => {
-        await signOut();
-        router.push("/");
+        if (typeof window !== 'undefined' && window.confirm("Are you sure you want to terminate your secure session?")) {
+            await signOut();
+            router.push("/");
+        }
     };
+
 
     const navItems = user
         ? [
