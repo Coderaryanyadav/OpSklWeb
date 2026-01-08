@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { ShieldCheck, Mail, Lock, Loader2, ArrowRight } from "lucide-react";
@@ -14,9 +13,6 @@ export default function LoginPage() {
         email: "",
         password: "",
     });
-
-    const router = useRouter();
-    const searchParams = useSearchParams();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,10 +28,12 @@ export default function LoginPage() {
 
             toast.success("Welcome back!");
 
-            // Get redirect parameter or default to dashboard
-            const redirectTo = searchParams.get('redirect') || '/dashboard';
-            router.push(redirectTo);
-            router.refresh();
+            // Get redirect parameter from URL or default to dashboard
+            const params = new URLSearchParams(window.location.search);
+            const redirectTo = params.get('redirect') || '/dashboard';
+
+            // Use window.location for immediate redirect
+            window.location.href = redirectTo;
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "Failed to log in";
             toast.error(message);
