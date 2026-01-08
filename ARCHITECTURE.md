@@ -4,25 +4,25 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        Client Layer                          │
-│  Next.js 15 (App Router) + React 19 + TypeScript           │
+│                        Client Layer                         │
+│  Next.js 15 (App Router) + React 19 + TypeScript            │
 └─────────────────────────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                     State Management                         │
+│                     State Management                        │
 │  • Zustand (Auth)                                           │
-│  • TanStack Query (Server State)                           │
-│  • React Hooks (Local State)                               │
+│  • TanStack Query (Server State)                            │
+│  • React Hooks (Local State)                                │
 └─────────────────────────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    Backend Services                          │
+│                    Backend Services                         │
 │  • Supabase Auth (JWT)                                      │
-│  • Supabase Database (PostgreSQL)                          │
-│  • Supabase Realtime (WebSockets)                          │
-│  • Razorpay (Payments - Mock/Production)                   │
+│  • Supabase Database (PostgreSQL)                           │
+│  • Supabase Realtime (WebSockets)                           │
+│  • Razorpay (Payments - Mock/Production)                    │
 └─────────────────────────────────────────────────────────────┘
 ```
 

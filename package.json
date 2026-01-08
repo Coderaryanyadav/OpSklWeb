@@ -2,11 +2,17 @@
   "name": "opskl-web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "load-test": "node scripts/load-test.js",
+    "load-test:run": "node scripts/load-test.js run",
+    "load-test:cleanup": "node scripts/load-test.js cleanup",
+    "load-test:queries": "node scripts/load-test.js test-queries",
+    "load-test:full": "node scripts/load-test.js full"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
@@ -38,6 +44,7 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
