@@ -13,6 +13,8 @@ Configure these in Vercel > Settings > Environment Variables:
 | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase Project URL (https://xyz.supabase.co) |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public API Key |
 | `NEXT_PUBLIC_RAZORPAY_KEY` | (Optional) Mock key or Real key `rzp_test_...` |
+| `SUPABASE_SERVICE_ROLE_KEY` | **Secret** Service Key (for Webhooks/Admin) |
+| `RAZORPAY_WEBHOOK_SECRET` | Secret set in Razorpay Dashboard |
 
 **Note**: Since we use Mock Razorpay Mode in this version, the Key is optional but good practice.
 
