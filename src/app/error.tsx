@@ -26,7 +26,7 @@ export default function GlobalError({
                 <div className="space-y-4">
                     <h1 className="text-3xl font-black font-heading tracking-tight">System Anomaly</h1>
                     <p className="text-muted-foreground font-medium leading-relaxed">
-                        We've encountered a critical execution error. Our engineering team has been notified.
+                        We&apos;ve encountered a critical execution error. Our engineering team has been notified.
                     </p>
                     <div className="p-4 rounded-2xl bg-black/40 border border-white/5 font-mono text-[10px] text-red-400 break-all overflow-hidden text-left">
                         ERROR_ID: {error.digest || "UNKNOWN"} <br />

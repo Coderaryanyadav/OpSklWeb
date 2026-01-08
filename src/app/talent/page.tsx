@@ -50,7 +50,7 @@ export default function BrowseTalentPage() {
                             Verified Talent Network
                         </div>
                         <h1 className="text-5xl md:text-7xl font-black font-heading tracking-tighter mb-8 leading-tight">
-                            India's Elite <br />
+                            India&apos;s Elite <br />
                             <span className="text-muted-foreground">Service Providers.</span>
                         </h1>
                     </div>

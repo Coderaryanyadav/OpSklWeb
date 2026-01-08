@@ -33,7 +33,8 @@ export default function LoginPage() {
             router.push("/dashboard");
             router.refresh();
         } catch (err: unknown) {
-            toast.error(err.message || "Failed to log in");
+            const message = err instanceof Error ? err.message : "Failed to log in";
+            toast.error(message);
         } finally {
             setLoading(false);
         }

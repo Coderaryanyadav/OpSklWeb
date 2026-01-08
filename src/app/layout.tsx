@@ -16,7 +16,7 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
     title: "OpSkl - Trust-First Gig Economy",
-    description: "India's verified gig economy platform connecting elite talent with premium opportunities.",
+    description: "India&apos;s verified gig economy platform connecting elite talent with premium opportunities.",
 };
 
 export default function RootLayout({

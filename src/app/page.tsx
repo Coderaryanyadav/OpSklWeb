@@ -2,7 +2,7 @@
 
 import { Navbar } from "@/components/layout/navbar";
 import Link from "next/link";
-import { ShieldCheck, Zap, Star, TrendingUp, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Zap, Star, ArrowRight, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function HomePage() {
@@ -25,7 +25,7 @@ export default function HomePage() {
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black uppercase tracking-widest mb-8"
                         >
                             <Zap className="h-3 w-3" />
-                            India's Trust-First Gig Economy
+                            India&apos;s Trust-First Gig Economy
                         </motion.div>
 
                         <motion.h1
@@ -136,7 +136,7 @@ export default function HomePage() {
                             Ready to Build Your Legacy?
                         </h2>
                         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                            Join thousands of verified professionals and businesses transforming India's gig economy.
+                            Join thousands of verified professionals and businesses transforming India&apos;s gig economy.
                         </p>
                         <Link
                             href="/signup"
