@@ -9,40 +9,10 @@ interface Props {
     params: Promise<{ id: string }>;
 }
 
+import { ApiService } from "@/lib/api";
+
 async function getGig(id: string): Promise<Gig | null> {
-    // Demo fallback
-    const samples: Gig[] = [
-        {
-            id: "1",
-            title: "E-commerce Website Design",
-            description: "We are launching a new high-end fashion label and need a website that reflects our brand's premium identity.\n\nKey Requirements:\n- Interactive UI elements\n- Mobile-first responsive design\n- Integration with Shopify backend\n- SEO-friendly architecture",
-            budget: { min: 15000, max: 25000 },
-            skills: ["UI/UX", "Figma", "React", "Shopify"],
-            client: {
-                name: "Priya Sharma",
-                verified: true,
-                completedGigs: 12,
-                rating: 4.9
-            },
-            location: "Mumbai, Maharashtra",
-            postedDate: new Date().toISOString()
-        }
-    ];
-
-    try {
-        const { data, error } = await supabase
-            .from("gigs")
-            .select("*")
-            .eq("id", id)
-            .single();
-
-        if (error || !data) {
-            return samples.find(s => s.id === id) || null;
-        }
-        return data;
-    } catch {
-        return samples.find(s => s.id === id) || null;
-    }
+    return await ApiService.getGigById(id);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

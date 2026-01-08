@@ -89,8 +89,6 @@ export default function PostGigPage() {
             toast.success("Gig published successfully!");
         } else {
             toast.error("Failed to publish gig. Please try again.");
-            // Fallback for demo
-            setSuccess(true);
         }
     };
 

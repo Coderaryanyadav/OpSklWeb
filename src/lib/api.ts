@@ -15,13 +15,13 @@ export const ApiService = {
             const { data, error } = await supabase
                 .from("profiles")
                 .select("*")
-                .order("rating", { ascending: false });
+                .order("xp", { ascending: false });
 
             if (error) throw error;
-            return (data?.length ? data : personSampleData) as Profile[];
+            return (data || []) as Profile[];
         } catch (err) {
             console.error("[ApiService] Error fetching profiles:", err);
-            return personSampleData;
+            return [];
         }
     },
 
@@ -37,7 +37,7 @@ export const ApiService = {
             return data as Profile;
         } catch (err) {
             console.error(`[ApiService] Error fetching profile ${id}:`, err);
-            return personSampleData.find(p => String(p.id) === String(id)) || null;
+            return null;
         }
     },
 
@@ -49,13 +49,18 @@ export const ApiService = {
             const { data, error } = await supabase
                 .from("gigs")
                 .select("*")
-                .order("created_at", { ascending: false });
+                .order("posted_date", { ascending: false });
 
             if (error) throw error;
-            return (data?.length ? data : gigSampleData) as Gig[];
+
+            // Normalize snake_case from DB to camelCase for UI
+            return (data || []).map(gig => ({
+                ...gig,
+                postedDate: gig.posted_date || gig.created_at
+            })) as Gig[];
         } catch (err) {
             console.error("[ApiService] Error fetching gigs:", err);
-            return gigSampleData;
+            return [];
         }
     },
 
@@ -68,16 +73,20 @@ export const ApiService = {
                 .single();
 
             if (error) throw error;
-            return data as Gig;
+            if (!data) return null;
+
+            return {
+                ...data,
+                postedDate: data.posted_date || data.created_at
+            } as Gig;
         } catch (err) {
             console.error(`[ApiService] Error fetching gig ${id}:`, err);
-            return gigSampleData.find(g => String(g.id) === String(id)) || null;
+            return null;
         }
     },
 
-    async createGig(gig: Partial<Gig>): Promise<{ success: boolean; data?: Gig[]; error?: unknown }> {
+    async createGig(gig: Partial<Gig>): Promise<{ success: boolean; data?: Gig[]; error?: any }> {
         try {
-            // Map to database column names (snake_case)
             const dbGig = {
                 title: gig.title,
                 description: gig.description,
@@ -86,7 +95,7 @@ export const ApiService = {
                 skills: gig.skills,
                 location: gig.location,
                 client: gig.client,
-                posted_date: gig.postedDate || new Date().toISOString()
+                posted_date: new Date().toISOString()
             };
 
             const { data, error } = await supabase
@@ -94,10 +103,13 @@ export const ApiService = {
                 .insert([dbGig])
                 .select();
 
-            if (error) throw error;
+            if (error) {
+                console.error("Supabase Error Details:", error);
+                throw error;
+            }
             return { success: true, data: data as Gig[] };
         } catch (err) {
-            console.error("[ApiService] Error creating gig:", err);
+            console.error("[ApiService] Critical Failure:", err);
             return { success: false, error: err };
         }
     }

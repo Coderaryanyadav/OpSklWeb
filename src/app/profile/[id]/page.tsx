@@ -9,43 +9,10 @@ interface Props {
     params: Promise<{ id: string }>;
 }
 
+import { ApiService } from "@/lib/api";
+
 async function getProfile(id: string): Promise<Profile | null> {
-    const sampleProfiles: Profile[] = [
-        {
-            id: "1",
-            name: "Rahul Kumar",
-            title: "Senior Full-Stack Developer",
-            bio: "Dedicated software architect with 8+ years of experience in building scalable web applications. Specialist in Next.js, Go, and PostgreSQL. I focus on clean code and exceptional user experiences.",
-            rating: 4.9,
-            reviews: 42,
-            xp: 2850,
-            location: "Bangalore, KA",
-            verified: true,
-            aadhaarVerified: true,
-            skills: ["Next.js", "TypeScript", "Node.js", "Docker", "Go", "AWS"],
-            rate: 1200,
-            completedGigs: 38,
-            portfolio: [
-                { title: "Fintech App", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" },
-                { title: "AI Dashboard", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" }
-            ]
-        }
-    ];
-
-    try {
-        const { data, error } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", id)
-            .single();
-
-        if (error || !data) {
-            return sampleProfiles.find(p => p.id === id) || sampleProfiles[0];
-        }
-        return data;
-    } catch {
-        return sampleProfiles[0];
-    }
+    return await ApiService.getProfileById(id);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
