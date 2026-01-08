@@ -16,7 +16,7 @@ export default function ProfilePage() {
     const profileId = params.id as string;
     const { user } = useAuthStore();
 
-    const { data: profile, isLoading } = useQuery({
+    const { data: profile, isLoading, error } = useQuery({
         queryKey: ['profile', profileId],
         queryFn: async () => {
             const { data, error } = await supabase
@@ -28,21 +28,62 @@ export default function ProfilePage() {
             if (error) throw error;
             return data as Profile;
         },
-        enabled: !!profileId
+        enabled: !!profileId,
+        retry: 2,
+        staleTime: 30000, // Cache for 30 seconds
     });
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="h-10 w-10 text-primary animate-spin" />
+            <div className="min-h-screen pt-24">
+                <Navbar />
+                <div className="flex items-center justify-center py-32">
+                    <div className="text-center">
+                        <Loader2 className="h-12 w-12 text-primary animate-spin mx-auto mb-4" />
+                        <p className="text-sm text-muted-foreground font-medium">Loading profile...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen pt-24">
+                <Navbar />
+                <div className="flex items-center justify-center py-32">
+                    <div className="text-center max-w-md">
+                        <div className="h-20 w-20 rounded-3xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 mx-auto mb-6">
+                            <ShieldCheck className="h-10 w-10" />
+                        </div>
+                        <h2 className="text-2xl font-black mb-4">Profile Unavailable</h2>
+                        <p className="text-muted-foreground mb-8">
+                            We couldn't load this profile. It may not exist or there might be a connection issue.
+                        </p>
+                        <Link
+                            href="/talent"
+                            className="inline-flex h-14 px-8 rounded-2xl bg-primary text-white font-black uppercase tracking-widest items-center gap-2 hover:scale-105 transition-all"
+                        >
+                            Browse Talent
+                        </Link>
+                    </div>
+                </div>
             </div>
         );
     }
 
     if (!profile) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <p className="text-zinc-500">Profile not found</p>
+            <div className="min-h-screen pt-24">
+                <Navbar />
+                <div className="flex items-center justify-center py-32">
+                    <div className="text-center">
+                        <p className="text-zinc-500 font-medium">Profile not found</p>
+                        <Link href="/talent" className="text-primary hover:underline mt-4 inline-block">
+                            Browse other profiles
+                        </Link>
+                    </div>
+                </div>
             </div>
         );
     }

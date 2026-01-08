@@ -4,8 +4,26 @@ import { Navbar } from "@/components/layout/navbar";
 import Link from "next/link";
 import { ShieldCheck, Zap, Star, ArrowRight, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAuthStore } from "@/stores/auth-store";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function HomePage() {
+    const { user } = useAuthStore();
+    const router = useRouter();
+
+    // Redirect logged-in users to dashboard
+    useEffect(() => {
+        if (user) {
+            router.push("/dashboard");
+        }
+    }, [user, router]);
+
+    // Don't render landing page if user is logged in (prevents flash)
+    if (user) {
+        return null;
+    }
+
     return (
         <div className="min-h-screen">
             <Navbar />
