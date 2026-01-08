@@ -12,9 +12,10 @@ export default function HomePage() {
 
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 overflow-hidden">
+                <div className="absolute inset-0 -z-10 bg-grid-white [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]" />
                 <div className="absolute inset-0 -z-10">
-                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 blur-[150px] rounded-full" />
-                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/20 blur-[150px] rounded-full" />
+                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 blur-[150px] rounded-full mix-blend-screen" />
+                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/10 blur-[150px] rounded-full mix-blend-screen" />
                 </div>
 
                 <div className="container mx-auto px-4 md:px-6">
@@ -22,7 +23,7 @@ export default function HomePage() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black uppercase tracking-widest mb-8"
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black uppercase tracking-widest mb-8 backdrop-blur-md"
                         >
                             <Zap className="h-3 w-3" />
                             India&apos;s Trust-First Gig Economy
@@ -35,14 +36,14 @@ export default function HomePage() {
                             className="text-5xl md:text-7xl lg:text-8xl font-black font-heading tracking-tighter mb-8 leading-tight"
                         >
                             Verified Talent.<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Premium Opportunities.</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-accent text-glow">Premium Opportunities.</span>
                         </motion.h1>
 
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto font-medium"
+                            className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto font-medium leading-relaxed"
                         >
                             Connect with elite service providers or find your next career-defining project. Every profile verified. Every payment secured.
                         </motion.p>
@@ -55,13 +56,13 @@ export default function HomePage() {
                         >
                             <Link
                                 href="/signup"
-                                className="h-16 px-10 rounded-2xl bg-primary text-white font-black uppercase tracking-wider text-sm flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 hover:scale-105 transition-all"
+                                className="h-16 px-10 rounded-2xl bg-primary text-white font-black uppercase tracking-wider text-sm flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all text-glow"
                             >
                                 Get Started <ArrowRight className="h-5 w-5" />
                             </Link>
                             <Link
                                 href="/gigs"
-                                className="h-16 px-10 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm font-black uppercase tracking-wider text-sm flex items-center justify-center hover:bg-white/10 transition-all"
+                                className="h-16 px-10 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm font-black uppercase tracking-wider text-sm flex items-center justify-center hover:bg-white/10 active:scale-95 transition-all"
                             >
                                 Browse Marketplace
                             </Link>
@@ -71,7 +72,7 @@ export default function HomePage() {
             </section>
 
             {/* Features Section */}
-            <section className="py-20">
+            <section className="py-20 relative">
                 <div className="container mx-auto px-4 md:px-6">
                     <div className="grid md:grid-cols-3 gap-8">
                         {[
@@ -96,7 +97,7 @@ export default function HomePage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.4 + idx * 0.1 }}
-                                className="p-8 rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-sm hover:border-primary/20 transition-colors"
+                                className="p-8 rounded-[2rem] glass-card group cursor-default"
                             >
                                 <div className="h-14 w-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-6">
                                     <feature.icon className="h-7 w-7" />

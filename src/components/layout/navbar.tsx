@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { ShieldCheck, Briefcase, Users, MessageSquare, Wallet, LogOut, Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuthStore } from "@/stores/auth-store";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -105,62 +106,82 @@ export function Navbar() {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                        className="md:hidden p-2 text-white"
+                        className="md:hidden p-2 text-white relative z-50"
                         aria-label="Toggle mobile menu"
                     >
                         {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                     </button>
                 </div>
 
-                {/* Mobile Menu */}
-                {mobileMenuOpen && (
-                    <div className="md:hidden py-6 space-y-2">
-                        {user ? (
-                            <>
-                                {navItems.map((item) => (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        onClick={() => setMobileMenuOpen(false)}
-                                        className={cn(
-                                            "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wider transition-all",
-                                            pathname === item.href
-                                                ? "bg-primary/10 text-primary"
-                                                : "text-muted-foreground hover:bg-white/5 hover:text-white"
-                                        )}
-                                    >
-                                        <item.icon className="h-4 w-4" />
-                                        {item.label}
-                                    </Link>
-                                ))}
-                                <button
-                                    onClick={handleSignOut}
-                                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wider text-red-500 hover:bg-red-500/10 transition-all"
-                                >
-                                    <LogOut className="h-4 w-4" />
-                                    Exit
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <Link
-                                    href="/login"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wider text-white hover:bg-white/5 transition-all"
-                                >
-                                    Log In
-                                </Link>
-                                <Link
-                                    href="/signup"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-4 py-3 rounded-xl bg-primary text-white text-sm font-bold uppercase tracking-wider text-center"
-                                >
-                                    Sign Up
-                                </Link>
-                            </>
-                        )}
-                    </div>
-                )}
+                {/* Mobile Menu Overlay & Drawer */}
+                <AnimatePresence>
+                    {mobileMenuOpen && (
+                        <>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+                            />
+                            <motion.div
+                                initial={{ x: "100%" }}
+                                animate={{ x: 0 }}
+                                exit={{ x: "100%" }}
+                                transition={{ type: "spring", damping: 20, stiffness: 100 }}
+                                className="fixed top-0 right-0 bottom-0 w-3/4 max-w-sm bg-background border-l border-white/10 z-40 md:hidden p-6 pt-24 shadow-2xl"
+                            >
+                                <div className="flex flex-col gap-2">
+                                    {user ? (
+                                        <>
+                                            {navItems.map((item) => (
+                                                <Link
+                                                    key={item.href}
+                                                    href={item.href}
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                    className={cn(
+                                                        "flex items-center gap-4 px-6 py-4 rounded-xl text-sm font-bold uppercase tracking-wider transition-all",
+                                                        pathname === item.href
+                                                            ? "bg-primary/10 text-primary border border-primary/20"
+                                                            : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                                                    )}
+                                                >
+                                                    <item.icon className="h-5 w-5" />
+                                                    {item.label}
+                                                </Link>
+                                            ))}
+                                            <div className="h-px bg-white/10 my-4" />
+                                            <button
+                                                onClick={handleSignOut}
+                                                className="w-full flex items-center gap-4 px-6 py-4 rounded-xl text-sm font-bold uppercase tracking-wider text-red-500 hover:bg-red-500/10 transition-all"
+                                            >
+                                                <LogOut className="h-5 w-5" />
+                                                Exit
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Link
+                                                href="/login"
+                                                onClick={() => setMobileMenuOpen(false)}
+                                                className="block px-6 py-4 rounded-xl text-sm font-bold uppercase tracking-wider text-white hover:bg-white/5 transition-all text-center border border-white/10"
+                                            >
+                                                Log In
+                                            </Link>
+                                            <Link
+                                                href="/signup"
+                                                onClick={() => setMobileMenuOpen(false)}
+                                                className="block px-6 py-4 rounded-xl bg-primary text-white text-sm font-bold uppercase tracking-wider text-center shadow-lg shadow-primary/20"
+                                            >
+                                                Sign Up
+                                            </Link>
+                                        </>
+                                    )}
+                                </div>
+                            </motion.div>
+                        </>
+                    )}
+                </AnimatePresence>
             </div>
         </nav>
     );

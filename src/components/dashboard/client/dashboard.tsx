@@ -34,7 +34,7 @@ export function ClientDashboard({ profile, stats, gigs }: ClientDashboardProps) 
                         Business Command Center
                     </div>
                     <h1 className="text-4xl md:text-5xl font-black font-heading tracking-tight">
-                        Managing <span className="text-muted-foreground">{profile.name.split(' ')[0]}&apos;s</span> Ecosystem
+                        Managing <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-400 to-zinc-600">{profile.name.split(' ')[0]}&apos;s</span> Ecosystem
                     </h1>
                 </div>
 

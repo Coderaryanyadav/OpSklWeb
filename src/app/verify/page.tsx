@@ -155,8 +155,8 @@ export default function VerificationPage() {
                                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 ml-1">Front-Side Document</label>
                                         <div
                                             className={cn(
-                                                "h-48 rounded-[2rem] border-2 border-dashed flex flex-col items-center justify-center gap-3 transition-all cursor-pointer overflow-hidden",
-                                                file ? "border-emerald-500/50 bg-emerald-500/5" : "border-white/10 bg-white/5 hover:border-white/20"
+                                                "h-48 rounded-[2rem] border-2 border-dashed flex flex-col items-center justify-center gap-3 transition-all cursor-pointer overflow-hidden group relative",
+                                                file ? "border-emerald-500/50 bg-emerald-500/5" : "border-white/20 bg-white/[0.03] hover:bg-white/[0.08] hover:border-primary/50 hover:scale-[1.01]"
                                             )}
                                             onClick={() => document.getElementById('file-upload')?.click()}
                                         >
